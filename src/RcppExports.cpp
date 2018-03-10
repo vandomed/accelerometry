@@ -17,9 +17,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// bouts
+IntegerVector bouts(IntegerVector counts, Rcpp::Nullable<Rcpp::IntegerVector> weartime, int bout_length, int thresh_lower, int thresh_upper, int tol, int tol_lower, int tol_upper, bool nci, bool days_distinct);
+RcppExport SEXP _accelerometry_bouts(SEXP countsSEXP, SEXP weartimeSEXP, SEXP bout_lengthSEXP, SEXP thresh_lowerSEXP, SEXP thresh_upperSEXP, SEXP tolSEXP, SEXP tol_lowerSEXP, SEXP tol_upperSEXP, SEXP nciSEXP, SEXP days_distinctSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type counts(countsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type weartime(weartimeSEXP);
+    Rcpp::traits::input_parameter< int >::type bout_length(bout_lengthSEXP);
+    Rcpp::traits::input_parameter< int >::type thresh_lower(thresh_lowerSEXP);
+    Rcpp::traits::input_parameter< int >::type thresh_upper(thresh_upperSEXP);
+    Rcpp::traits::input_parameter< int >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type tol_lower(tol_lowerSEXP);
+    Rcpp::traits::input_parameter< int >::type tol_upper(tol_upperSEXP);
+    Rcpp::traits::input_parameter< bool >::type nci(nciSEXP);
+    Rcpp::traits::input_parameter< bool >::type days_distinct(days_distinctSEXP);
+    rcpp_result_gen = Rcpp::wrap(bouts(counts, weartime, bout_length, thresh_lower, thresh_upper, tol, tol_lower, tol_upper, nci, days_distinct));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_accelerometry_artifacts", (DL_FUNC) &_accelerometry_artifacts, 2},
+    {"_accelerometry_bouts", (DL_FUNC) &_accelerometry_bouts, 10},
     {NULL, NULL, 0}
 };
 

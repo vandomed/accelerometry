@@ -24,16 +24,14 @@ the NCI's SAS programs
 (\url{http://riskfactor.cancer.gov/tools/nhanes_pam}).
 }
 \examples{
-# Load in sample data frame
+# Load toy dataset
 data(unidata)
 
 # Get data from ID number 21007
 counts.part3 <- unidata[unidata[, "seqn"] == 21007, "paxinten"]
 
-# Replace artifacts (defined as 10000+ counts) with average of neighboring 
-# values
-counts.part3.corrected <- accel.artifacts(counts = counts.part3, 
-                                          thresh = 10000)
+# Replace counts > 10,000 with average of neighboring values
+counts.part3.corrected <- artifacts(counts = counts.part3, thresh = 10000)
 
 }
 \references{
