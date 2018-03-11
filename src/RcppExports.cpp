@@ -37,10 +37,41 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// intensities
+IntegerVector intensities(IntegerVector counts, IntegerVector thresh);
+RcppExport SEXP _accelerometry_intensities(SEXP countsSEXP, SEXP threshSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type counts(countsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type thresh(threshSEXP);
+    rcpp_result_gen = Rcpp::wrap(intensities(counts, thresh));
+    return rcpp_result_gen;
+END_RCPP
+}
+// weartime
+IntegerVector weartime(IntegerVector counts, int window, int tol, int tol_upper, bool nci, bool days_distinct, int units_day);
+RcppExport SEXP _accelerometry_weartime(SEXP countsSEXP, SEXP windowSEXP, SEXP tolSEXP, SEXP tol_upperSEXP, SEXP nciSEXP, SEXP days_distinctSEXP, SEXP units_daySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type counts(countsSEXP);
+    Rcpp::traits::input_parameter< int >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< int >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type tol_upper(tol_upperSEXP);
+    Rcpp::traits::input_parameter< bool >::type nci(nciSEXP);
+    Rcpp::traits::input_parameter< bool >::type days_distinct(days_distinctSEXP);
+    Rcpp::traits::input_parameter< int >::type units_day(units_daySEXP);
+    rcpp_result_gen = Rcpp::wrap(weartime(counts, window, tol, tol_upper, nci, days_distinct, units_day));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_accelerometry_artifacts", (DL_FUNC) &_accelerometry_artifacts, 2},
     {"_accelerometry_bouts", (DL_FUNC) &_accelerometry_bouts, 10},
+    {"_accelerometry_intensities", (DL_FUNC) &_accelerometry_intensities, 2},
+    {"_accelerometry_weartime", (DL_FUNC) &_accelerometry_weartime, 7},
     {NULL, NULL, 0}
 };
 

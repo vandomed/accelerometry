@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{bouts}
 \alias{bouts}
-\title{Activity Bout Detection}
+\title{Physical Activity Bout Detection}
 \usage{
 bouts(counts, weartime = NULL, bout_length = 10L, thresh_lower = 0L,
   thresh_upper = 100000L, tol = 0L, tol_lower = 0L, tol_upper = 100000L,
@@ -49,7 +49,8 @@ Integer vector with 1's for minutes that are part of an activity
 bout and 0's for minutes that are not.
 }
 \description{
-Identify bouts of physical activity in uniaxial accelerometer count data.
+Identify bouts of physical activity based on a vector of accelerometer count 
+values.
 }
 \details{
 If \code{nci = FALSE}, the algorithm uses a moving window to go through 
@@ -81,17 +82,17 @@ activity in which counts are consistently high, but not exclusively in one
 intensity range.
 }
 \examples{
-# Load toy dataset
+# Load accelerometer data for first 5 participants in NHANES 2003-2004
 data(unidata)
 
 # Get data from ID number 21005
 counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
 
 # Identify periods of valid wear time
-# weartime.flag <- weartime(counts = counts.part1)
+weartime.part1 <- weartime(counts = counts.part1)
 
 # Identify moderate-to-vigorous activity bouts
-mvpa.bouts <- bouts(counts = counts.part1,
+mvpa.bouts <- bouts(counts = counts.part1, weartime = weartime.part1, 
                     thresh_lower = 2020)
 
 

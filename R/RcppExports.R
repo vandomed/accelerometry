@@ -3,14 +3,14 @@
 
 #' Accelerometer Artifact Correction
 #'
-#' This function corrects abnormally high count values in minute-to-minute 
-#' accelerometer data by replacing such values with the average of the 
-#' neighboring count values. An integer vector is returned despite the average 
-#' calculation often producing a decimal. This follows the convention used by 
-#' the NCI's SAS programs 
+#' This function corrects abnormally high count values in accelerometer data by 
+#' replacing such values with the average of neighboring count values. An 
+#' integer vector is returned despite the average calculation often producing a 
+#' decimal. This follows the convention used in the NCI's SAS programs 
 #' (\url{http://riskfactor.cancer.gov/tools/nhanes_pam}). 
 #' 
-#' @param counts Integer vector with accelerometer count values.
+#' 
+#' @inheritParams weartime
 #' @param thresh Integer value specifying the smallest count value that should 
 #' be considered an artifact.
 #'
@@ -28,7 +28,7 @@
 #'
 #'
 #' @examples
-#' # Load toy dataset
+#' # Load accelerometer data for first 5 participants in NHANES 2003-2004
 #' data(unidata)
 #' 
 #' # Get data from ID number 21007
@@ -42,9 +42,10 @@ artifacts <- function(counts, thresh) {
     .Call(`_accelerometry_artifacts`, counts, thresh)
 }
 
-#' Activity Bout Detection
+#' Physical Activity Bout Detection
 #' 
-#' Identify bouts of physical activity in uniaxial accelerometer count data.
+#' Identify bouts of physical activity based on a vector of accelerometer count 
+#' values.
 #' 
 #' If \code{nci = FALSE}, the algorithm uses a moving window to go through 
 #' every possible interval of length \code{bout_length} in \code{counts}. Any 
@@ -75,7 +76,7 @@ artifacts <- function(counts, thresh) {
 #' intensity range.
 #' 
 #' 
-#' @inheritParams artifacts
+#' @inheritParams weartime
 #' 
 #' @param weartime Integer vector with 1's for wear time minutes and 0's for 
 #' non-wear time minutes.
@@ -99,9 +100,6 @@ artifacts <- function(counts, thresh) {
 #' @param tol_upper Integer value specifying upper cut-off for count values 
 #' outside of intensity range during an activity bout.
 #' 
-#' @param nci Logical value for whether to use algorithm from the NCI's SAS 
-#' programs. See \bold{Details}.
-#' 
 #' @param days_distinct Logical value for whether to treat each day of data as 
 #' distinct, i.e. identify non-wear time and activity bouts for day 1, then day 
 #' 2, etc. If \code{FALSE}, algorithm is applied to full monitoring period 
@@ -119,22 +117,132 @@ artifacts <- function(counts, thresh) {
 #' 
 #' 
 #' @examples
-#' # Load toy dataset
+#' # Load accelerometer data for first 5 participants in NHANES 2003-2004
 #' data(unidata)
 #' 
 #' # Get data from ID number 21005
 #' counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
 #' 
 #' # Identify periods of valid wear time
-#' # weartime.flag <- weartime(counts = counts.part1)
+#' weartime.part1 <- weartime(counts = counts.part1)
 #' 
 #' # Identify moderate-to-vigorous activity bouts
-#' mvpa.bouts <- bouts(counts = counts.part1,
+#' mvpa.bouts <- bouts(counts = counts.part1, weartime = weartime.part1, 
 #'                     thresh_lower = 2020)
 #' 
 #' 
 #' @export
 bouts <- function(counts, weartime = NULL, bout_length = 10L, thresh_lower = 0L, thresh_upper = 100000L, tol = 0L, tol_lower = 0L, tol_upper = 100000L, nci = TRUE, days_distinct = FALSE) {
     .Call(`_accelerometry_bouts`, counts, weartime, bout_length, thresh_lower, thresh_upper, tol, tol_lower, tol_upper, nci, days_distinct)
+}
+
+#' Physical Activity Intensities
+#' 
+#' Given a vector of accelerometer count values, calculates time spent in 5 
+#' mutually exclusive user-defined intensity levels (typically representing
+#' sedentary, light, lifestyle, moderate, and vigorous) as well as the total 
+#' counts accumulated in various intensities. Non-wear time should be removed 
+#' from \code{counts} before calling \code{intensities} to avoid overestimating 
+#' sedentary time.
+#' 
+#' 
+#' @inheritParams artifacts
+#' 
+#' @param thresh Numeric vector with four cutpoints from which five intensity 
+#' ranges are derived. For example, \code{thresh = c(100, 760, 2020, 5999)} 
+#' creates: 0-99 = intensity 1; 100-759 = intensity level 2; 760-2019 = 
+#' intensity 3; 2020-5998 = intensity 4; >= 5999 = intensity 5.
+#' 
+#' 
+#' @return Integer vector of length 16 in which the first eight values are 
+#' minutes in intensities 1, 2, 3, 4, 5, 2-3, 4-5, and 2-5, and the next eight 
+#' are counts accumulated during time spent in each of those intensities.
+#' 
+#' 
+#' @examples
+#' # Load accelerometer data for first 5 participants in NHANES 2003-2004
+#' data(unidata)
+#' 
+#' # Get data from ID number 21005
+#' counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
+#' 
+#' # Create vector of counts during valid wear time only
+#' # counts.part1.weartime <- counts.part1[weartime(counts = counts.part1) == 1]
+#' counts.part1.weartime <- counts.part1
+#' 
+#' # Calculate physical activity intensity variables
+#' intensity.variables <- intensities(counts = counts.part1.weartime)
+#' 
+#' 
+#' @export
+intensities <- function(counts, thresh = as.integer( c(100, 760, 2020, 5999))) {
+    .Call(`_accelerometry_intensities`, counts, thresh)
+}
+
+#' Wear Time Classification
+#' 
+#' Classifies wear time vs. non-wear time based on a vector of accelerometer 
+#' count values.
+#' 
+#' If \code{nci = FALSE}, the algorithm uses a moving window to go through 
+#' every possible interval of length \code{window} in \code{counts}. Any 
+#' interval in which no more than \code{tol} counts are non-zero, and those 
+#' are still < \code{tol.upper}, is classified as non-wear time. 
+#' 
+#' If \code{nci = TRUE}, non-wear time is classified according to the algorithm 
+#' used in the NCI's SAS programs. Briefly, this algorithm defines a non-wear 
+#' period as an interval of length \code{window} that starts with a count value 
+#' of 0, does not contain any periods with \code{(tol + 1)} consecutive 
+#' non-zero count values, and does not contain any counts > \code{tol.upper}. 
+#' If these criteria are met, the bout continues until there are 
+#' \code{(tol + 1)} consecutive non-zero count values or a single count value > 
+#' \code{tol.upper}.
+#' 
+#' 
+#' @param counts Integer vector with accelerometer count values.
+#'
+#' @param window Integer value specifying minimum length of a non-wear 
+#' interval.
+#' 
+#' @param tol Integer value specifying tolerance, i.e. number of 
+#' seconds/minutes with non-zero counts allowed during a non-wear interval.
+#' 
+#' @param tol_upper Integer value specifying maximum count value for a 
+#' second/minute with non-zero counts during a non-wear interval.
+#' 
+#' @param nci Logical value for whether to use algorithm from the NCI's SAS 
+#' programs. See \bold{Details}.
+#' 
+#' @param days_distinct Logical value for whether to treat each day of data as 
+#' distinct, as opposed to analyzing the entire monitoring period as one 
+#' continuous segment. For minute-to-minute counts, strongly recommend setting 
+#' to \code{FALSE} to correctly classify time near midnight.
+#' 
+#' @param units_day Integer value specifying how many data point are in a day. 
+#' Typically either \code{1440} or \code{86400} depending on whether count 
+#' values are minute-to-minute or second-to-second.
+#' 
+#' 
+#' @return Integer vector with 1's for valid wear time and 0's for non-wear 
+#' time.
+#' 
+#' 
+#' @inherit artifacts references
+#' 
+#' 
+#' @examples
+#' # Load accelerometer data for first 5 participants in NHANES 2003-2004
+#' data(unidata)
+#' 
+#' # Get data from ID number 21005
+#' counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
+#' 
+#' # Identify periods of valid wear time
+#' weartime.flag <- weartime(counts = counts.part1)
+#' 
+#' 
+#' @export
+weartime <- function(counts, window = 60L, tol = 0L, tol_upper = 99L, nci = FALSE, days_distinct = FALSE, units_day = 1440L) {
+    .Call(`_accelerometry_weartime`, counts, window, tol, tol_upper, nci, days_distinct, units_day)
 }
 

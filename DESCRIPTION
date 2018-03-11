@@ -3,7 +3,7 @@ Type: Package
 Title: Functions for Processing Minute-to-Minute Accelerometer Data
 Version: 2.2.5
 License: GPL-3
-Date: 2018-03-08
+Date: 2018-03-11
 Author: Dane R. Van Domelen
 Maintainer: Dane R. Van Domelen <vandomed@gmail.com>
 Description: A collection of functions that perform operations on time-series accelerometer data, such as identify non-wear time, flag minutes that are part of an activity bout, and find the maximum 10-minute average count value. The functions are generally very flexible, allowing for a variety of algorithms to be implemented. Most of the functions are written in C++ for efficiency.

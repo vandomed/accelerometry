@@ -4,6 +4,10 @@
 \name{unidata}
 \alias{unidata}
 \title{Uniaxial Sample Data}
+\source{
+\url{https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=Examination&CycleBeginYear=2003}
+}
 \description{
-Toy dataset with uniaxial minute-to-minute counts.
+Accelerometer Data for the first 5 participants in the National Health and 
+Nutrition Examination Survey (NHANES) 2003-2004 dataset.
 }

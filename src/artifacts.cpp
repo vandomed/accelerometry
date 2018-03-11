@@ -3,14 +3,14 @@ using namespace Rcpp;
 
 //' Accelerometer Artifact Correction
 //'
-//' This function corrects abnormally high count values in minute-to-minute 
-//' accelerometer data by replacing such values with the average of the 
-//' neighboring count values. An integer vector is returned despite the average 
-//' calculation often producing a decimal. This follows the convention used by 
-//' the NCI's SAS programs 
+//' This function corrects abnormally high count values in accelerometer data by 
+//' replacing such values with the average of neighboring count values. An 
+//' integer vector is returned despite the average calculation often producing a 
+//' decimal. This follows the convention used in the NCI's SAS programs 
 //' (\url{http://riskfactor.cancer.gov/tools/nhanes_pam}). 
 //' 
-//' @param counts Integer vector with accelerometer count values.
+//' 
+//' @inheritParams weartime
 //' @param thresh Integer value specifying the smallest count value that should 
 //' be considered an artifact.
 //'
@@ -28,7 +28,7 @@ using namespace Rcpp;
 //'
 //'
 //' @examples
-//' # Load toy dataset
+//' # Load accelerometer data for first 5 participants in NHANES 2003-2004
 //' data(unidata)
 //' 
 //' # Get data from ID number 21007

@@ -1,9 +1,10 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//' Activity Bout Detection
+//' Physical Activity Bout Detection
 //' 
-//' Identify bouts of physical activity in uniaxial accelerometer count data.
+//' Identify bouts of physical activity based on a vector of accelerometer count 
+//' values.
 //' 
 //' If \code{nci = FALSE}, the algorithm uses a moving window to go through 
 //' every possible interval of length \code{bout_length} in \code{counts}. Any 
@@ -34,7 +35,7 @@ using namespace Rcpp;
 //' intensity range.
 //' 
 //' 
-//' @inheritParams artifacts
+//' @inheritParams weartime
 //' 
 //' @param weartime Integer vector with 1's for wear time minutes and 0's for 
 //' non-wear time minutes.
@@ -58,9 +59,6 @@ using namespace Rcpp;
 //' @param tol_upper Integer value specifying upper cut-off for count values 
 //' outside of intensity range during an activity bout.
 //' 
-//' @param nci Logical value for whether to use algorithm from the NCI's SAS 
-//' programs. See \bold{Details}.
-//' 
 //' @param days_distinct Logical value for whether to treat each day of data as 
 //' distinct, i.e. identify non-wear time and activity bouts for day 1, then day 
 //' 2, etc. If \code{FALSE}, algorithm is applied to full monitoring period 
@@ -78,17 +76,17 @@ using namespace Rcpp;
 //' 
 //' 
 //' @examples
-//' # Load toy dataset
+//' # Load accelerometer data for first 5 participants in NHANES 2003-2004
 //' data(unidata)
 //' 
 //' # Get data from ID number 21005
 //' counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
 //' 
 //' # Identify periods of valid wear time
-//' # weartime.flag <- weartime(counts = counts.part1)
+//' weartime.part1 <- weartime(counts = counts.part1)
 //' 
 //' # Identify moderate-to-vigorous activity bouts
-//' mvpa.bouts <- bouts(counts = counts.part1,
+//' mvpa.bouts <- bouts(counts = counts.part1, weartime = weartime.part1, 
 //'                     thresh_lower = 2020)
 //' 
 //' 
