@@ -145,6 +145,45 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// personvars
+NumericMatrix personvars(NumericMatrix dayvars, int rows, int days, int wk, int we);
+RcppExport SEXP _accelerometry_personvars(SEXP dayvarsSEXP, SEXP rowsSEXP, SEXP daysSEXP, SEXP wkSEXP, SEXP weSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type dayvars(dayvarsSEXP);
+    Rcpp::traits::input_parameter< int >::type rows(rowsSEXP);
+    Rcpp::traits::input_parameter< int >::type days(daysSEXP);
+    Rcpp::traits::input_parameter< int >::type wk(wkSEXP);
+    Rcpp::traits::input_parameter< int >::type we(weSEXP);
+    rcpp_result_gen = Rcpp::wrap(personvars(dayvars, rows, days, wk, we));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rle2_i
+IntegerMatrix rle2_i(IntegerVector x, bool indices);
+RcppExport SEXP _accelerometry_rle2_i(SEXP xSEXP, SEXP indicesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< bool >::type indices(indicesSEXP);
+    rcpp_result_gen = Rcpp::wrap(rle2_i(x, indices));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rle2_n
+NumericMatrix rle2_n(NumericVector x, bool indices);
+RcppExport SEXP _accelerometry_rle2_n(SEXP xSEXP, SEXP indicesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< bool >::type indices(indicesSEXP);
+    rcpp_result_gen = Rcpp::wrap(rle2_n(x, indices));
+    return rcpp_result_gen;
+END_RCPP
+}
 // sedbreaks
 int sedbreaks(IntegerVector counts, IntegerVector weartime, int thresh);
 RcppExport SEXP _accelerometry_sedbreaks(SEXP countsSEXP, SEXP weartimeSEXP, SEXP threshSEXP) {
@@ -201,6 +240,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_accelerometry_movingaves_i_max", (DL_FUNC) &_accelerometry_movingaves_i_max, 2},
     {"_accelerometry_movingaves_n", (DL_FUNC) &_accelerometry_movingaves_n, 2},
     {"_accelerometry_movingaves_n_max", (DL_FUNC) &_accelerometry_movingaves_n_max, 2},
+    {"_accelerometry_personvars", (DL_FUNC) &_accelerometry_personvars, 5},
+    {"_accelerometry_rle2_i", (DL_FUNC) &_accelerometry_rle2_i, 2},
+    {"_accelerometry_rle2_n", (DL_FUNC) &_accelerometry_rle2_n, 2},
     {"_accelerometry_sedbreaks", (DL_FUNC) &_accelerometry_sedbreaks, 3},
     {"_accelerometry_sedbreaks_flags", (DL_FUNC) &_accelerometry_sedbreaks_flags, 3},
     {"_accelerometry_weartime", (DL_FUNC) &_accelerometry_weartime, 7},

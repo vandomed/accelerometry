@@ -210,6 +210,38 @@ movingaves_n_max <- function(x, window) {
     .Call(`_accelerometry_movingaves_n_max`, x, window)
 }
 
+#' Calculating Daily Averages for Physical Activity Variables
+#' 
+#' Not intended for direct use.
+#' 
+#' @param dayvars Numeric matrix with daily physical activity variables.
+#' @param rows Numeric value specifying number of rows in the matrix to be 
+#' returned.
+#' @param days Integer value specifying minimum number of valid days a 
+#' participant must have to be included.
+#' @param wk Integer value specifying minimum number of valid weekdays a 
+#' participant must have to be included.
+#' @param we Integer value specifying minimum number of valid weekend days a 
+#' participant must have to be included.
+#' 
+#' 
+#' @return
+#' Numeric matrix.
+#' 
+#' 
+#' @export
+personvars <- function(dayvars, rows, days, wk, we) {
+    .Call(`_accelerometry_personvars`, dayvars, rows, days, wk, we)
+}
+
+rle2_i <- function(x, indices) {
+    .Call(`_accelerometry_rle2_i`, x, indices)
+}
+
+rle2_n <- function(x, indices) {
+    .Call(`_accelerometry_rle2_n`, x, indices)
+}
+
 sedbreaks <- function(counts, weartime, thresh) {
     .Call(`_accelerometry_sedbreaks`, counts, weartime, thresh)
 }
