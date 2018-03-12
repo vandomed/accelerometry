@@ -3,10 +3,10 @@
 
 #' Accelerometer Artifact Correction
 #'
-#' This function corrects abnormally high count values in accelerometer data by 
-#' replacing such values with the average of neighboring count values. An 
-#' integer vector is returned despite the average calculation often producing a 
-#' decimal. This follows the convention used in the NCI's SAS programs 
+#' Corrects abnormally high count values in accelerometer data by replacing 
+#' such values with the average of neighboring count values. Returns integer 
+#' vector despite the average calculation often producing a decimal; this 
+#' follows the convention used in the NCI's SAS programs 
 #' (\url{http://riskfactor.cancer.gov/tools/nhanes_pam}). 
 #' 
 #' 
@@ -124,10 +124,10 @@ artifacts <- function(counts, thresh) {
 #' counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
 #' 
 #' # Identify periods of valid wear time
-#' weartime.part1 <- weartime(counts = counts.part1)
+#' wear.part1 <- weartime(counts = counts.part1)
 #' 
 #' # Identify moderate-to-vigorous activity bouts
-#' mvpa.bouts <- bouts(counts = counts.part1, weartime = weartime.part1, 
+#' mvpa.bouts <- bouts(counts = counts.part1, weartime = wear.part1, 
 #'                     thresh_lower = 2020)
 #' 
 #' 
@@ -167,16 +167,39 @@ bouts <- function(counts, weartime = NULL, bout_length = 10L, thresh_lower = 0L,
 #' counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
 #' 
 #' # Create vector of counts during valid wear time only
-#' # counts.part1.weartime <- counts.part1[weartime(counts = counts.part1) == 1]
-#' counts.part1.weartime <- counts.part1
+#' counts.part1.wear <- counts.part1[weartime(counts = counts.part1) == 1]
 #' 
 #' # Calculate physical activity intensity variables
-#' intensity.variables <- intensities(counts = counts.part1.weartime)
+#' intensity.variables <- intensities(counts = counts.part1.wear)
 #' 
 #' 
 #' @export
 intensities <- function(counts, thresh = as.integer( c(100, 760, 2020, 5999))) {
     .Call(`_accelerometry_intensities`, counts, thresh)
+}
+
+movingaves_i <- function(x, window) {
+    .Call(`_accelerometry_movingaves_i`, x, window)
+}
+
+movingaves_i_max <- function(x, window) {
+    .Call(`_accelerometry_movingaves_i_max`, x, window)
+}
+
+movingaves_n <- function(x, window) {
+    .Call(`_accelerometry_movingaves_n`, x, window)
+}
+
+movingaves_n_max <- function(x, window) {
+    .Call(`_accelerometry_movingaves_n_max`, x, window)
+}
+
+sedbreaks <- function(counts, weartime, thresh) {
+    .Call(`_accelerometry_sedbreaks`, counts, weartime, thresh)
+}
+
+sedbreaks_flags <- function(counts, weartime, thresh) {
+    .Call(`_accelerometry_sedbreaks_flags`, counts, weartime, thresh)
 }
 
 #' Wear Time Classification

@@ -32,11 +32,10 @@ using namespace Rcpp;
 //' counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
 //' 
 //' # Create vector of counts during valid wear time only
-//' # counts.part1.weartime <- counts.part1[weartime(counts = counts.part1) == 1]
-//' counts.part1.weartime <- counts.part1
+//' counts.part1.wear <- counts.part1[weartime(counts = counts.part1) == 1]
 //' 
 //' # Calculate physical activity intensity variables
-//' intensity.variables <- intensities(counts = counts.part1.weartime)
+//' intensity.variables <- intensities(counts = counts.part1.wear)
 //' 
 //' 
 //' @export
@@ -97,4 +96,5 @@ IntegerVector intensities(IntegerVector counts,
   
   // Return output vector
   return(out);
+  
 }

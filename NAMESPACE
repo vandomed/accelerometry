@@ -3,6 +3,8 @@
 export(artifacts)
 export(bouts)
 export(intensities)
+export(movingaves)
+export(sedbreaks)
 export(weartime)
 importFrom(Rcpp,evalCpp)
 useDynLib(accelerometry, .registration=TRUE)

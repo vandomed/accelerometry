@@ -3,10 +3,10 @@ using namespace Rcpp;
 
 //' Accelerometer Artifact Correction
 //'
-//' This function corrects abnormally high count values in accelerometer data by 
-//' replacing such values with the average of neighboring count values. An 
-//' integer vector is returned despite the average calculation often producing a 
-//' decimal. This follows the convention used in the NCI's SAS programs 
+//' Corrects abnormally high count values in accelerometer data by replacing 
+//' such values with the average of neighboring count values. Returns integer 
+//' vector despite the average calculation often producing a decimal; this 
+//' follows the convention used in the NCI's SAS programs 
 //' (\url{http://riskfactor.cancer.gov/tools/nhanes_pam}). 
 //' 
 //' 

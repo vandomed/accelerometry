@@ -49,6 +49,80 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// movingaves_i
+NumericVector movingaves_i(IntegerVector x, double window);
+RcppExport SEXP _accelerometry_movingaves_i(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(movingaves_i(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
+// movingaves_i_max
+double movingaves_i_max(IntegerVector x, double window);
+RcppExport SEXP _accelerometry_movingaves_i_max(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(movingaves_i_max(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
+// movingaves_n
+NumericVector movingaves_n(NumericVector x, double window);
+RcppExport SEXP _accelerometry_movingaves_n(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(movingaves_n(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
+// movingaves_n_max
+double movingaves_n_max(NumericVector x, double window);
+RcppExport SEXP _accelerometry_movingaves_n_max(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(movingaves_n_max(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sedbreaks
+int sedbreaks(IntegerVector counts, IntegerVector weartime, int thresh);
+RcppExport SEXP _accelerometry_sedbreaks(SEXP countsSEXP, SEXP weartimeSEXP, SEXP threshSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type counts(countsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type weartime(weartimeSEXP);
+    Rcpp::traits::input_parameter< int >::type thresh(threshSEXP);
+    rcpp_result_gen = Rcpp::wrap(sedbreaks(counts, weartime, thresh));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sedbreaks_flags
+IntegerVector sedbreaks_flags(IntegerVector counts, IntegerVector weartime, int thresh);
+RcppExport SEXP _accelerometry_sedbreaks_flags(SEXP countsSEXP, SEXP weartimeSEXP, SEXP threshSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type counts(countsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type weartime(weartimeSEXP);
+    Rcpp::traits::input_parameter< int >::type thresh(threshSEXP);
+    rcpp_result_gen = Rcpp::wrap(sedbreaks_flags(counts, weartime, thresh));
+    return rcpp_result_gen;
+END_RCPP
+}
 // weartime
 IntegerVector weartime(IntegerVector counts, int window, int tol, int tol_upper, bool nci, bool days_distinct, int units_day);
 RcppExport SEXP _accelerometry_weartime(SEXP countsSEXP, SEXP windowSEXP, SEXP tolSEXP, SEXP tol_upperSEXP, SEXP nciSEXP, SEXP days_distinctSEXP, SEXP units_daySEXP) {
@@ -71,6 +145,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_accelerometry_artifacts", (DL_FUNC) &_accelerometry_artifacts, 2},
     {"_accelerometry_bouts", (DL_FUNC) &_accelerometry_bouts, 10},
     {"_accelerometry_intensities", (DL_FUNC) &_accelerometry_intensities, 2},
+    {"_accelerometry_movingaves_i", (DL_FUNC) &_accelerometry_movingaves_i, 2},
+    {"_accelerometry_movingaves_i_max", (DL_FUNC) &_accelerometry_movingaves_i_max, 2},
+    {"_accelerometry_movingaves_n", (DL_FUNC) &_accelerometry_movingaves_n, 2},
+    {"_accelerometry_movingaves_n_max", (DL_FUNC) &_accelerometry_movingaves_n_max, 2},
+    {"_accelerometry_sedbreaks", (DL_FUNC) &_accelerometry_sedbreaks, 3},
+    {"_accelerometry_sedbreaks_flags", (DL_FUNC) &_accelerometry_sedbreaks_flags, 3},
     {"_accelerometry_weartime", (DL_FUNC) &_accelerometry_weartime, 7},
     {NULL, NULL, 0}
 };

@@ -1,4 +1,4 @@
-#' Functions for Processing Minute-to-Minute Accelerometer Data
+#' Functions for Processing Accelerometer Data
 #'
 #' A collection of functions that perform operations on time-series 
 #' accelerometer data, such as identify non-wear time, flag minutes that are 
@@ -21,28 +21,32 @@
 #'
 #' @author Dane R. Van Domelen \cr \email{vandomed@@gmail.com}
 #'
-#' @references 
-#' Dirk Eddelbuettel and Romain Francois (2011). Rcpp: Seamless R and C++ 
-#' Integration. Journal of Statistical Software, 40(8), 1-18. 
-#' \url{http://www.jstatsoft.org/v40/i08/}.
-#' 
-#' Dirk Eddelbuettel (2013). Seamless R and C++ Integration with Rcpp. Springer, 
-#' New York. ISBN 978-1-4614-6867-7.
-#' 
+#' @references
 #' Centers for Disease Control and Prevention (CDC). National Center for Health 
 #' Statistics (NCHS). National Health and Nutrition Examination Survey Data. 
 #' Hyattsville, MD: US Department of Health and Human Services, Centers for 
 #' Disease Control and Prevention, 2003-6. Available at: 
-#' \url{http://www.cdc.gov/nchs/nhanes/nhanes_questionnaires.htm}. Accessed July 
-#' 31, 2014.
+#' \url{http://www.cdc.gov/nchs/nhanes/nhanes_questionnaires.htm}. Accessed 
+#' March 9, 2018.
 #' 
-#' Dane R. Van Domelen, W. Stephen Pittard, and Tamara B. Harris (2014). 
-#' nhanesaccel: Process accelerometer data from NHANES 2003-2006. R package 
-#' version 2.1.1. \url{http://R-Forge.R-project.org/projects/nhanesaccel}. 
+#' Eddelbuettel, D. and Francois, R. (2011) Rcpp: Seamless R and C++ 
+#' Integration. Journal of Statistical Software, 40(8), 1-18. 
+#' \url{http://www.jstatsoft.org/v40/i08/}.
+#' 
+#' Eddelbuettel, D. (2013) Seamless R and C++ Integration with Rcpp. Springer, 
+#' New York. ISBN 978-1-4614-6867-7.
+#' 
+#' Eddelbuettel, D. and Balamuta, J.J. (2017). Extending R with C++: A Brief 
+#' Introduction to Rcpp. PeerJ Preprints 5:e3188v1. 
+#' \url{https://doi.org/10.7287/peerj.preprints.3188v1}.
 #' 
 #' National Cancer Institute. Risk factor monitoring and methods: SAS programs 
 #' for analyzing NHANES 2003-2004 accelerometer data. Available at: 
-#' \url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed July 31, 2014.
+#' \url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed March 9, 2018.
+#' 
+#' Van Domelen, D.R., Pittard, W.S. and Harris, T.B. (2014) 
+#' nhanesaccel: Process accelerometer data from NHANES 2003-2006. R package 
+#' version 2.1.1. \url{http://R-Forge.R-project.org/projects/nhanesaccel}. 
 #' 
 #' Acknowledgment: This material is based upon work supported by the National 
 #' Science Foundation Graduate Research Fellowship under Grant No. DGE-0940903.

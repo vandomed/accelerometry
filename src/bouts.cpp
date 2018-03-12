@@ -83,10 +83,10 @@ using namespace Rcpp;
 //' counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
 //' 
 //' # Identify periods of valid wear time
-//' weartime.part1 <- weartime(counts = counts.part1)
+//' wear.part1 <- weartime(counts = counts.part1)
 //' 
 //' # Identify moderate-to-vigorous activity bouts
-//' mvpa.bouts <- bouts(counts = counts.part1, weartime = weartime.part1, 
+//' mvpa.bouts <- bouts(counts = counts.part1, weartime = wear.part1, 
 //'                     thresh_lower = 2020)
 //' 
 //' 

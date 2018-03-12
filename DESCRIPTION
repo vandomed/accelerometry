@@ -1,6 +1,6 @@
 Package: accelerometry
 Type: Package
-Title: Functions for Processing Minute-to-Minute Accelerometer Data
+Title: Functions for Processing Accelerometer Data
 Version: 2.2.5
 License: GPL-3
 Date: 2018-03-11
