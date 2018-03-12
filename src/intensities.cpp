@@ -13,8 +13,8 @@ using namespace Rcpp;
 //' 
 //' @inheritParams artifacts
 //' 
-//' @param thresh Numeric vector with four cutpoints from which five intensity 
-//' ranges are derived. For example, \code{thresh = c(100, 760, 2020, 5999)} 
+//' @param int_cuts Numeric vector with four cutpoints from which five intensity 
+//' ranges are derived. For example, \code{int_cuts = c(100, 760, 2020, 5999)} 
 //' creates: 0-99 = intensity 1; 100-759 = intensity level 2; 760-2019 = 
 //' intensity 3; 2020-5998 = intensity 4; >= 5999 = intensity 5.
 //' 
@@ -41,26 +41,26 @@ using namespace Rcpp;
 //' @export
 // [[Rcpp::export]]
 IntegerVector intensities(IntegerVector counts, 
-                          IntegerVector thresh = IntegerVector::create(100, 760, 2020, 5999)) {
+                          IntegerVector int_cuts = IntegerVector::create(100, 760, 2020, 5999)) {
   
   // Get length(counts) and initialize output vector
   int n = counts.size();
   IntegerVector out(16);
   
   // Get intensity cutpoints
-  int thresh_1 = thresh[0]; 
-  int thresh_2 = thresh[1];
-  int thresh_3 = thresh[2];
-  int thresh_4 = thresh[3];
+  int int_cuts_1 = int_cuts[0]; 
+  int int_cuts_2 = int_cuts[1];
+  int int_cuts_3 = int_cuts[2];
+  int int_cuts_4 = int_cuts[3];
   
   // Loop through each count value
   for (int a = 0; a < n; ++a) {
     int counts_a = counts[a];
-    if (counts_a < thresh_1) {
+    if (counts_a < int_cuts_1) {
       out[0] += 1;
       out[8] += counts_a;
     }
-    else if (counts_a >= thresh_1 && counts_a < thresh_1) {
+    else if (counts_a >= int_cuts_1 && counts_a < int_cuts_1) {
       out[1] += 1;
       out[5] += 1;
       out[7] += 1;
@@ -68,7 +68,7 @@ IntegerVector intensities(IntegerVector counts,
       out[13] += counts_a;
       out[15] += counts_a;
     }
-    else if (counts_a >= thresh_2 && counts_a < thresh_3) {
+    else if (counts_a >= int_cuts_2 && counts_a < int_cuts_3) {
       out[2] += 1;
       out[5] += 1;
       out[7] += 1;
@@ -76,7 +76,7 @@ IntegerVector intensities(IntegerVector counts,
       out[13] += counts_a;
       out[15] += counts_a;
     }
-    else if (counts_a >= thresh_3 && counts_a < thresh_4) {
+    else if (counts_a >= int_cuts_3 && counts_a < int_cuts_4) {
       out[3] += 1;
       out[6] += 1;
       out[7] += 1;
@@ -84,7 +84,7 @@ IntegerVector intensities(IntegerVector counts,
       out[14] += counts_a;
       out[15] += counts_a;
     }
-    else if (counts_a >= thresh_4) {
+    else if (counts_a >= int_cuts_4) {
       out[4] += 1;
       out[6] += 1;
       out[7] += 1;
