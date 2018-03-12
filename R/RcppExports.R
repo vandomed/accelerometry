@@ -42,6 +42,22 @@ artifacts <- function(counts, thresh) {
     .Call(`_accelerometry_artifacts`, counts, thresh)
 }
 
+blockaves_i <- function(x, window) {
+    .Call(`_accelerometry_blockaves_i`, x, window)
+}
+
+blockaves_i_max <- function(x, window) {
+    .Call(`_accelerometry_blockaves_i_max`, x, window)
+}
+
+blockaves_n <- function(x, window) {
+    .Call(`_accelerometry_blockaves_n`, x, window)
+}
+
+blockaves_n_max <- function(x, window) {
+    .Call(`_accelerometry_blockaves_n_max`, x, window)
+}
+
 #' Physical Activity Bout Detection
 #' 
 #' Identify bouts of physical activity based on a vector of accelerometer count 

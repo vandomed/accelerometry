@@ -6,8 +6,8 @@ NumericVector movingaves_i(IntegerVector x, double window) {
   
   // Get length(x), calculate 1 / window, and initialize output vector
   int n = x.size();
-  NumericVector out(n - window + 1);
   double inverse = 1 / window;
+  NumericVector out(n - window + 1);
   
   // First moving average
   double sum = 0;
@@ -30,12 +30,12 @@ NumericVector movingaves_i(IntegerVector x, double window) {
 // [[Rcpp::export]]
 double movingaves_i_max(IntegerVector x, double window) {
   
-  // Get length(x) and initialize sum
+  // Get length(x)
   int n = x.size();
-  double sum = 0;
   
   // First moving sum
   NumericVector current(window);
+  double sum = 0;
   for (int a = 0; a < window; ++a) {
     current[a] = x[a];
     sum += x[a];
@@ -43,8 +43,8 @@ double movingaves_i_max(IntegerVector x, double window) {
   
   // Loop through and find max moving sum
   double max = sum;
-  for (int b = window; b < n; ++b) {
-    sum = sum + x[b] - x[b - window];
+  for (int a = window; a < n; ++a) {
+    sum = sum + x[a] - x[a - window];
     if (sum > max) max = sum;
   }
   
@@ -82,12 +82,12 @@ NumericVector movingaves_n(NumericVector x, double window) {
 // [[Rcpp::export]]
 double movingaves_n_max(NumericVector x, double window) {
   
-  // Get length(x) and initialize sum
+  // Get length(x)
   int n = x.size();
-  double sum = 0;
   
   // First moving sum
   NumericVector current(window);
+  double sum = 0;
   for (int a = 0; a < window; ++a) {
     current[a] = x[a];
     sum += x[a];
@@ -95,8 +95,8 @@ double movingaves_n_max(NumericVector x, double window) {
   
   // Loop through and find max moving sum
   double max = sum;
-  for (int b = window; b < n; ++b) {
-    sum = sum + x[b] - x[b - window];
+  for (int a = window; a < n; ++a) {
+    sum = sum + x[a] - x[a - window];
     if (sum > max) max = sum;
   }
   

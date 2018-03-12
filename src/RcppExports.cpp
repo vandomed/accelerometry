@@ -17,6 +17,54 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// blockaves_i
+NumericVector blockaves_i(IntegerVector x, int window);
+RcppExport SEXP _accelerometry_blockaves_i(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(blockaves_i(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
+// blockaves_i_max
+NumericVector blockaves_i_max(IntegerVector x, int window);
+RcppExport SEXP _accelerometry_blockaves_i_max(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(blockaves_i_max(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
+// blockaves_n
+NumericVector blockaves_n(NumericVector x, int window);
+RcppExport SEXP _accelerometry_blockaves_n(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(blockaves_n(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
+// blockaves_n_max
+NumericVector blockaves_n_max(NumericVector x, int window);
+RcppExport SEXP _accelerometry_blockaves_n_max(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(blockaves_n_max(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
 // bouts
 IntegerVector bouts(IntegerVector counts, Rcpp::Nullable<Rcpp::IntegerVector> weartime, int bout_length, int thresh_lower, int thresh_upper, int tol, int tol_lower, int tol_upper, bool nci, bool days_distinct);
 RcppExport SEXP _accelerometry_bouts(SEXP countsSEXP, SEXP weartimeSEXP, SEXP bout_lengthSEXP, SEXP thresh_lowerSEXP, SEXP thresh_upperSEXP, SEXP tolSEXP, SEXP tol_lowerSEXP, SEXP tol_upperSEXP, SEXP nciSEXP, SEXP days_distinctSEXP) {
@@ -143,6 +191,10 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_accelerometry_artifacts", (DL_FUNC) &_accelerometry_artifacts, 2},
+    {"_accelerometry_blockaves_i", (DL_FUNC) &_accelerometry_blockaves_i, 2},
+    {"_accelerometry_blockaves_i_max", (DL_FUNC) &_accelerometry_blockaves_i_max, 2},
+    {"_accelerometry_blockaves_n", (DL_FUNC) &_accelerometry_blockaves_n, 2},
+    {"_accelerometry_blockaves_n_max", (DL_FUNC) &_accelerometry_blockaves_n_max, 2},
     {"_accelerometry_bouts", (DL_FUNC) &_accelerometry_bouts, 10},
     {"_accelerometry_intensities", (DL_FUNC) &_accelerometry_intensities, 2},
     {"_accelerometry_movingaves_i", (DL_FUNC) &_accelerometry_movingaves_i, 2},

@@ -33,10 +33,11 @@ id.part1 <- unidata[unidata[, "seqn"] == 21005, "seqn"]
 counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
 
 # Create vector of all 10-minute moving averages
-all.movingaves <- movingaves(x = counts.part1, window = 10)
+all.movingaves <- movingaves(x = counts.part1, window = 10, integer = TRUE)
 
 # Calculate maximum 10-minute moving average
-max.movingave <- movingaves(x = counts.part1, window = 10, max = TRUE)
+max.movingave <- movingaves(x = counts.part1, window = 10, integer = TRUE, 
+                            max = TRUE)
 
 
 }
