@@ -54,6 +54,7 @@
 #'
 #' @docType package
 #' @importFrom Rcpp evalCpp
+#' @importFrom dvmisc inside
 #' @useDynLib accelerometry, .registration=TRUE
 #' @name accelerometry
 NULL

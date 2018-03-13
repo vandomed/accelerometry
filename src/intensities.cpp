@@ -93,8 +93,6 @@ IntegerVector intensities(IntegerVector counts,
       out[15] += counts_a;
     }
   }
-  
-  // Return output vector
   return(out);
   
 }

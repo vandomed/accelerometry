@@ -4,13 +4,13 @@
 \alias{intensities}
 \title{Physical Activity Intensities}
 \usage{
-intensities(counts, thresh = as.integer(c(100, 760, 2020, 5999)))
+intensities(counts, int_cuts = as.integer(c(100, 760, 2020, 5999)))
 }
 \arguments{
 \item{counts}{Integer vector with accelerometer count values.}
 
-\item{thresh}{Numeric vector with four cutpoints from which five intensity 
-ranges are derived. For example, \code{thresh = c(100, 760, 2020, 5999)} 
+\item{int_cuts}{Numeric vector with four cutpoints from which five intensity 
+ranges are derived. For example, \code{int_cuts = c(100, 760, 2020, 5999)} 
 creates: 0-99 = intensity 1; 100-759 = intensity level 2; 760-2019 = 
 intensity 3; 2020-5998 = intensity 4; >= 5999 = intensity 5.}
 }

@@ -1,8 +1,10 @@
 #' Process Uniaxial Minute-to-Minute Accelerometer Data
 #' 
 #' Calculates a variety of physical activity variables based on uniaxial 
-#' minute-to-minute accelerometer count values for individual participants. A 
-#' data dictionary for the variables returned is available here: 
+#' minute-to-minute accelerometer count values for individual participants. 
+#' Assumes first 1440 minutes are day 1, next 1440 are day 2, and so on. If 
+#' final day has less than 1440 minutes, it is excluded. A data dictionary for 
+#' the variables created is available here: 
 #' \url{https://sites.google.com/site/danevandomelen/r-package-accelerometry/data-dictionary}.
 #' 
 #' 
@@ -61,14 +63,11 @@
 #' If \code{TRUE}, you can still specify non-default values for \code{brevity}, 
 #' \code{weekday_weekend}, and \code{return_form}.
 #' 
-#' @param start_date Date of first day of monitoring (must be of class 'date'). 
-#' Only used to extract day of week, so if day of week is known but date is not, 
-#' user can enter any date that corresponds to that day of the week. The default 
-#' date corresponds to the first Sunday in January 2014. 
+#' @param start_day Integer value specifying day of week for first day of 
+#' monitoring, with 1 = Sunday, ..., 7 = Satuday.
 #' 
-#' @param start_time Character vector indicating start time for monitoring. If 
-#' not specified it is assumed to be 00:00:00, i.e. the very beginning of the 
-#' first day.
+#' @param start_date Date for first day of monitoring, which function can use to 
+#' figure out \code{start_day}. 
 #' 
 #' @param id Numeric value specifying ID number of participant. 
 #' 
@@ -77,6 +76,17 @@
 #' physical activity volume, \code{2} for addditional indicators of activity 
 #' intensities, activity bouts, sedentary behavior, and peak activity, and 
 #' \code{3} for additional hourly count averages.
+#' 
+#' @param hourly_var Character string specifying what hourly activity variable 
+#' to record, if \code{brevity = 3}. Choices are "counts", "cpm", "sed_min", 
+#' "sed_bouted_10min", and "sed_breaks". 
+#' 
+#' @param hourly_wearmin Integer value specifying minimum number of wear time 
+#' minutes needed during a given hour to record a value for the hourly activity 
+#' variable.
+#' 
+#' @param hourly_normalize Logical value for whether to normalize hourly 
+#' activity by number of wear time minutes.
 #' 
 #' @param valid_days Integer value specifying minimum number of valid days to 
 #' be considered valid for analysis.
@@ -124,14 +134,6 @@
 #' want to use a lower value (e.g. 1200) if participants were instructed to 
 #' remove devices for sleeping, but often did not.
 #' 
-#' @param partialday_minimum Integer value specifying minimum number of minutes 
-#' for a partial day of monitoring to be processed and potentially considered 
-#' valid for analysis. Generally applies only to the first and last days of 
-#' monitoring, which may not cover full 24-hour periods. Included because some 
-#' researchers may prefer to exclude a day that only has data from, say, 1 pm to 
-#' midnight, even if sufficient wear time was achieved during that 11-hour time 
-#' frame.
-#' 
 #' @param active_bout_length Integer value specifying minimum length of an 
 #' active bout.
 #' 
@@ -178,7 +180,7 @@
 #' @return
 #' Numeric matrix or list of two numeric matrices, depending on 
 #' \code{return_form}.
-#'
+#' 
 #' 
 #' @examples
 #' # Load accelerometer data for first 5 participants in NHANES 2003-2004
@@ -188,21 +190,42 @@
 #' id.part1 <- unidata[unidata[, "seqn"] == 21005, "seqn"]
 #' counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
 #' 
-#' # Create vector of all 10-minute moving averages
-#' all.movingaves <- movingaves(x = counts.part1, window = 10, integer = TRUE)
+#' # Process data from ID 21005 and request per-day variables
+#' accel.days <- process_uni(counts = counts.part1, id = id.part1)
 #' 
-#' # Calculate maximum 10-minute moving average
-#' max.movingave <- movingaves(x = counts.part1, window = 10, integer = TRUE, 
-#'                             max = TRUE)
+#' # Process data from ID 21005 and request daily averages
+#' accel.averages <- process_uni(counts = counts.part1, id = id.part1, 
+#'                               return_form = 1)
+#'                               
+#' # Process data from ID 21005 and request per-day variables and daily averages
+#' accel.list <- process_uni(counts = counts.part1, id = id.part1, 
+#'                           return_form = 3)
+#'                           
+#' # Process data according to methods used in NCI's SAS programs
+#' accel.nci1 <- process_uni(counts = counts.part1, id = id.part1, brevity = 2, 
+#'                           valid_days = 4, cpm_nci = TRUE, days_distinct = TRUE, 
+#'                           nonwear_tol = 2, nonwear_tol_upper = 100, 
+#'                           nonwear_nci = TRUE, weartime_maximum = 1440, 
+#'                           active_bout_tol = 2, active_bout_nci = TRUE, 
+#'                           artifact_thresh = 32767, artifact_action = 3, 
+#'                           return_form = 3)
+#'                           
+#' # Repeat, but use nci_methods input for convenience
+#' accel.nci2 <- process_uni(counts = counts.part1, id = id.part1, 
+#'                           nci_methods = TRUE, brevity = 2, return_form = 3)
+#'                           
+#' # Verify that previous two function calls give identical results
+#' all(accel.nci1[[1]] == accel.nci2[[1]])
+#' all(accel.nci1[[2]] == accel.nci2[[2]])
 #' 
 #' 
 #' @export
-process_uni <-
-  function(counts, steps = NULL, 
+process_uni <- function(counts, steps = NULL, 
            nci_methods = FALSE, 
-           start_date = as.Date("2014-01-05"), start_time = "00:00:00", 
+           start_day = 1, start_date = NULL, 
            id = NULL, 
            brevity = 1, 
+           hourly_var = "cpm", hourly_wearmin = 0, hourly_normalize = TRUE, 
            valid_days = 1, valid_week_days = 0, valid_weekend_days = 0, 
            int_cuts = c(100, 760, 2020, 5999), 
            cpm_nci = FALSE, 
@@ -214,255 +237,253 @@ process_uni <-
            active_bout_length = 10, active_bout_tol = 0, 
            mvpa_bout_tol_lower = 0, vig_bout_tol_lower = 0, 
            active_bout_nci = FALSE, sed_bout_tol = 0, 
-           sed_bout_tol_maximum = int.cuts[2] - 1, 
+           sed_bout_tol_maximum = int_cuts[2] - 1, 
            artifact_thresh = 25000, artifact_action = 1, 
            weekday_weekend = FALSE, return_form = 2) {
   
-  # Get number of minutes of data
-  datalength <- length(counts)
-  
-  # If nci.methods is TRUE, set inputs to replicate data processing done by NCI's SAS programs
-  if (nci.methods == TRUE) {
+  # If nci_methods is TRUE, set inputs to mimic NCI's SAS programs
+  if (nci_methods) {
     
-    # Set certain inputs to match NCI methods
-    valid.days <- 4
-    valid.week.days <- 0
-    valid.weekend.days <- 0
-    int.cuts <- c(100, 760, 2020, 5999)
-    cpm.nci <- TRUE
-    days.distinct <- TRUE
-    nonwear.window <- 60
-    nonwear.tol <- 2
-    nonwear.tol.upper <- 100
-    nonwear.nci <- TRUE
-    weartime.minimum <- 600
-    weartime.maximum <- 1440
-    partialday.minimum <- 1440
-    active.bout.length <- 10
-    active.bout.tol <- 2
-    mvpa.bout.tol.lower <- 0
-    vig.bout.tol.lower <- 0
-    active.bout.nci <- TRUE
-    sed.bout.tol <- 0
-    sed.bout.tol.maximum <- 759
-    artifact.thresh <- 32767
-    artifact.action <- 3
+    valid_days <- 4
+    valid_week_days <- 0
+    valid_weekend_days <- 0
+    int_cuts <- c(100, 760, 2020, 5999)
+    cpm_nci <- TRUE
+    days_distinct <- TRUE
+    nonwear_window <- 60
+    nonwear_tol <- 2
+    nonwear_tol_upper <- 100
+    nonwear_nci <- TRUE
+    weartime_minimum <- 600
+    weartime_maximum <- 1440
+    active_bout_length <- 10
+    active_bout_tol <- 2
+    mvpa_bout_tol_lower <- 0
+    vig_bout_tol_lower <- 0
+    active_bout_nci <- TRUE
+    sed_bout_tol <- 0
+    sed_bout_tol_maximum <- 759
+    artifact_thresh <- 32767
+    artifact_action <- 3
     
   }
+    
+  # Get start/end indices for each day of monitoring
+  n.minutes <- length(counts)
+  end.indices <- seq(1440, n.minutes, 1440)
+  start.indices <- end.indices - 1439
   
-  # Get start/stop minutes for each day of monitoring
-  extratime <- max(1, round(as.numeric(difftime(as.POSIXct(paste(start.date, "24:00:00")), as.POSIXct(paste(start.date, start.time)), units = "mins"))))
-  startmins <- 1
-  stopmins <- min(extratime, datalength)
-  if (stopmins < datalength) {
-    startmins <- c(startmins, seq(stopmins+1, datalength, 1440))
-    stopmins <- c(stopmins, startmins[2:length(startmins)]+1439)
-    stopmins[length(stopmins)] <- datalength
-  }
-  
-  # If id value or vector is provided, get first value
-  if (is.null(id)) {
-    id <- 1
-  } else {
-    id <- id[1]
-  }
+  # Get single value for ID
+  id <- ifelse(is.null(id), 1, id[1])
   
   # Calculate number of full days of data
-  numdays <- length(startmins)
+  n.days <- length(start.indices)
+  
+  # Calculate acceptable range for weartime
+  weartime.range <- c(weartime_minimum, weartime_maximum)
+  
+  # Create variable for whether there steps is specified
+  have.steps <- ! is.null(steps)
   
   # Initialize matrix to save daily physical activity variables
-  dayvars <- matrix(NA, ncol = 68, nrow = numdays)
+  day.vars <- matrix(NA, ncol = 68, nrow = n.days)
   
-  # If artifact.action = 3, replace minutes with counts > artifact.thresh with average of surrounding minutes
-  if (artifact.action == 3) {
-    counts <- accel.artifacts(counts = counts, thresh = artifact.thresh)
+  # If artifact.action = 3, replace minutes with counts > artifact.thresh with 
+  # average of surrounding minutes
+  if (artifact_action == 3) {
+    counts <- artifacts(counts = counts, thresh = artifact_thresh)
   }
   
-  # Call weartime.flag function to flag minutes valid for analysis
-  wearflag <- accel.weartime(counts = counts,
-                             window = nonwear.window,
-                             tol = nonwear.tol,
-                             tol.upper = nonwear.tol.upper,
-                             nci = nonwear.nci,
-                             days.distinct = days.distinct)
+  # Call weartime function to flag minutes valid for analysis
+  wearflag <- weartime(counts = counts,
+                       window = nonwear_window,
+                       tol = nonwear_tol,
+                       tol_upper = nonwear_tol_upper,
+                       nci = nonwear_nci,
+                       days_distinct = days_distinct)
   
-  # If artifact.action = 2, consider minutes with counts >= artifact.thresh as non-weartime
-  if (artifact.action == 2) {
-    artifact.locs <- which(counts >= artifact.thresh)
+  # If artifact.action = 2, consider minutes with counts >= artifact.thresh as 
+  # non-weartime
+  if (artifact_action == 2) {
+    artifact.locs <- which(counts >= artifact_thresh)
     wearflag[artifact.locs] <- 0
     counts[artifact.locs] <- 0
   }
   
   # Identify bouts of MVPA, VPA, and sedentary time
-  if (brevity == 2 | brevity == 3) {
-    boutedMVPA <- accel.bouts(counts = counts,
-                              weartime = wearflag,
-                              bout.length = active.bout.length,
-                              thresh.lower = int.cuts[3],
-                              tol = active.bout.tol,
-                              tol.lower = mvpa.bout.tol.lower,
-                              nci = active.bout.nci,
-                              days.distinct = days.distinct,
-                              skipchecks = TRUE)
-    boutedvig <- accel.bouts(counts = counts,
-                             weartime = wearflag,
-                             bout.length = active.bout.length,
-                             thresh.lower = int.cuts[4],
-                             tol = active.bout.tol,
-                             tol.lower = vig.bout.tol.lower,
-                             nci = active.bout.nci,
-                             days.distinct = days.distinct,
-                             skipchecks = TRUE)
-    boutedsed10 <- accel.bouts(counts = counts,
-                               weartime = wearflag,
-                               bout.length = 10,
-                               thresh.upper = int.cuts[1]-1,
-                               tol = sed.bout.tol,
-                               tol.upper = sed.bout.tol.maximum,
-                               days.distinct = days.distinct,
-                               skipchecks = TRUE)
-    boutedsed30 <- accel.bouts(counts = counts,
-                               weartime = wearflag,
-                               bout.length = 30,
-                               thresh.upper = int.cuts[1]-1,
-                               tol = sed.bout.tol,
-                               tol.upper = sed.bout.tol.maximum,
-                               days.distinct = days.distinct,
-                               skipchecks = TRUE)
-    boutedsed60 <- accel.bouts(counts = counts,
-                               weartime = wearflag,
-                               bout.length = 60,
-                               thresh.upper = int.cuts[1]-1,
-                               tol = sed.bout.tol,
-                               tol.upper = sed.bout.tol.maximum,
-                               days.distinct = days.distinct,
-                               skipchecks = TRUE)
+  if (brevity %in% c(2, 3)) {
+    
+    bouted.MVPA <- 
+      bouts(counts = counts, weartime = wearflag, 
+            bout_length = active_bout_length, thresh_lower = int_cuts[3],
+            tol = active_bout_tol, tol_lower = mvpa_bout_tol_lower,
+            nci = active_bout_nci, days_distinct = days_distinct)
+    
+    bouted.VPA <- 
+      bouts(counts = counts, weartime = wearflag, 
+            bout_length = active_bout_length, thresh_lower = int_cuts[4],
+            tol = active_bout_tol, tol_lower = vig_bout_tol_lower,
+            nci = active_bout_nci, days_distinct = days_distinct)
+    
+    bouted.sed10 <- 
+      bouts(counts = counts, weartime = wearflag, bout_length = 10,
+            thresh_upper = int_cuts[1] - 1, tol = sed_bout_tol, 
+            tol_upper = sed_bout_tol_maximum, days_distinct = days_distinct)
+    
+    bouted.sed30 <- 
+      bouts(counts = counts, weartime = wearflag, bout_length = 30,
+            thresh_upper = int_cuts[1] - 1, tol = sed_bout_tol, 
+            tol_upper = sed_bout_tol_maximum, days_distinct = days_distinct)
+    
+    bouted.sed60 <- 
+      bouts(counts = counts, weartime = wearflag, bout_length = 60,
+            thresh_upper = int_cuts[1] - 1, tol = sed_bout_tol, 
+            tol_upper = sed_bout_tol_maximum, days_distinct = days_distinct)
+
   }
   
-  # Get day of week
-  currentday <- weekdays(start.date-1)
-  if (currentday == "Sunday") {
-    currentday <- 1
-  } else if (currentday == "Monday") {
-    currentday <- 2
-  } else if (currentday == "Tuesday") {
-    currentday <- 3
-  } else if (currentday == "Wednesday") {
-    currentday <- 4
-  } else if (currentday == "Thursday") {
-    currentday <- 5
-  } else if (currentday == "Friday") {
-    currentday <- 6
-  } else if (currentday == "Saturday") {
-    currentday <- 7
+  # Get days of week (1 = Sunday, ..., 7 = Saturday)
+  if (! is.null(start_date)) {
+    days <- as.POSIXlt(seq(start_date, start_date + n.days - 1, 1))$wday + 1
+  } else {
+    days <- start_day: (start_day + n.days - 1)
+    days <- ifelse(days > 7, days - 7, days)
   }
   
-  # Loop through accelerometer data for i days
-  for (i in 1:numdays) { 
+  # Loop through each day of data
+  for (ii in 1: n.days) { 
     
-    # Update day of week
-    currentday <- currentday + 1
-    if (currentday == 8) {
-      currentday <- 1
-    }
+    # Day of week
+    day.ii <- days[ii]
     
-    # Load accelerometer data from day i    
-    day.counts <- counts[startmins[i]:stopmins[i]]
-    day.wearflag <- wearflag[startmins[i]:stopmins[i]]
-    if (brevity == 2 | brevity == 3) {
-      day.boutedMVPA <- boutedMVPA[startmins[i]:stopmins[i]]
-      day.boutedvig <- boutedvig[startmins[i]:stopmins[i]]
-      day.boutedsed10 <- boutedsed10[startmins[i]:stopmins[i]]
-      day.boutedsed30 <- boutedsed30[startmins[i]:stopmins[i]]
-      day.boutedsed60 <- boutedsed60[startmins[i]:stopmins[i]]
+    # Load data for iith day
+    start.ii <- start.indices[ii]
+    end.ii <- end.indices[ii]
+    counts.ii <- counts[start.ii: end.ii]
+    wearflag.ii <- wearflag[start.ii: end.ii]
+    if (brevity %in% c(2, 3)) {
+      bouted.MVPA.ii <- bouted.MVPA[start.ii: end.ii]
+      bouted.VPA.ii <- bouted.VPA[start.ii: end.ii]
+      bouted.sed10.ii <- bouted.sed10[start.ii: end.ii]
+      bouted.sed30.ii <- bouted.sed30[start.ii: end.ii]
+      bouted.sed60.ii <- bouted.sed60[start.ii: end.ii]
     }
-    if (!is.null(steps)) {
-      day.steps <- steps[startmins[i]:stopmins[i]]
+    if (! is.null(steps)) {
+      steps.ii <- steps[start.ii: end.ii]
     }
     
     # Calculate constants that are used more than once
-    daywear <- sum(day.wearflag)
-    maxcount <- max(day.counts)
-    daylength <- length(day.counts)
+    sum_wearflag.ii <- sum(wearflag.ii)
+    max_counts.ii <- max(counts.ii)
     
-    # ID number
-    dayvars[i,1] <- id
+    # ID number and day of week
+    day.vars[ii, 1: 2] <- c(id, day.ii)
     
-    # Day of week
-    dayvars[i,2] <- currentday
+    # Valid day
+    day.vars[ii, 3] <- 
+      ifelse(! inside(sum_wearflag.ii, weartime.range) || 
+               (artifact_action == 1 & max_counts.ii >= artifact_thresh), 0, 1)
     
-    # Check whether day is valid for analysis; if not, mark as invalid
-    if (daywear < weartime.minimum | daywear > weartime.maximum | (artifact.action == 1 & maxcount >= artifact.thresh) |
-        daylength < partialday.minimum) {
-      dayvars[i,3] <- 0
-    } else {
-      dayvars[i,3] <- 1
-    }
+    # Wear time minutes
+    day.vars[ii, 4] <- sum_wearflag.ii
     
-    # Minutes of valid wear time
-    dayvars[i,4] <- daywear
-    
-    # Store day.counts[day.wearflag == 1] into its own vector
-    day.counts.valid <- day.counts[day.wearflag == 1]
+    # Create vector of counts during weartime
+    wearcounts.ii <- counts.ii[wearflag.ii == 1]
     
     # Total counts during wear time
-    dayvars[i,5] <- sum(day.counts.valid)
+    sum_wearcounts.ii <- sum(wearcounts.ii)
+    day.vars[ii, 5] <- sum_wearcounts.ii
     
-    # Counts per minute - calculated as total counts during wear time divided by wear time
-    dayvars[i,6] <- dayvars[i,5]/dayvars[i,4]
+    # Counts per minute
+    day.vars[ii, 6] <- sum_wearcounts.ii / sum_wearflag.ii
     
     # Steps
-    if (!is.null(steps)) {
-      dayvars[i,7] <- sum(day.steps[day.wearflag == 1])
+    if (have.steps) {
+      day.vars[ii, 7] <- sum(steps.ii[wearflag.ii == 1])
     }
     
-    if (brevity == 2 | brevity == 3) {
+    if (brevity %in% c(2, 3)) {
       
-      # Minutes in various intensity levels
-      intensities <- accel.intensities(counts = day.counts.valid, thresh = int.cuts)
-      dayvars[i,8:15] <- intensities[1:8]
+      # Minutes in each intensity
+      intensities.ii <- intensities(counts = wearcounts.ii, int_cuts = int_cuts)
+      intensities.min.ii <- intensities.ii[1: 8]
+      day.vars[ii, 8: 15] <- intensities.min.ii
       
-      # Proportions of daily wear time in each intensity level
-      dayvars[i,16:23] <- dayvars[i,8:15]/daywear
+      # Percentage of wear time in each intensity
+      day.vars[ii, 16: 23] <- intensities.min.ii / sum_wearflag.ii
       
-      # Counts accumulated during wear time in each intensity level  
-      dayvars[i,24:31] <- intensities[9:16]
+      # Counts accumulated from each intensity
+      day.vars[ii, 24: 31] <- intensities.ii[9: 16]
       
       # Bouted sedentary time
-      dayvars[i,32] <- sum(day.boutedsed10)
-      dayvars[i,33] <- sum(day.boutedsed30)
-      dayvars[i,34] <- sum(day.boutedsed60)
+      day.vars[ii, 32: 34] <- c(sum(bouted.sed10.ii), 
+                                sum(bouted.sed30.ii), 
+                                sum(bouted.sed60.ii))
       
       # Sedentary breaks
-      dayvars[i,35] <- accel.sedbreaks(counts = day.counts, weartime = day.wearflag, thresh = int.cuts[1], skipchecks = TRUE)
+      day.vars[ii, 35] <- sedbreaks(counts = counts.ii, weartime = wearflag.ii, 
+                                    thresh = int_cuts[1])
       
-      # Maximum 1-min, 5-min, 10-min, and 30-min count averages
-      dayvars[i,36] <- maxcount
-      dayvars[i,37] <- movingaves(x = day.counts, window = 5, return.max = TRUE, skipchecks = TRUE)
-      dayvars[i,38] <- movingaves(x = day.counts, window = 10, return.max = TRUE, skipchecks = TRUE)
-      dayvars[i,39] <- movingaves(x = day.counts, window = 30, return.max = TRUE, skipchecks = TRUE)
+      # Maximum 1-min, 5-min, 10-min, and 30-min count average
+      day.vars[ii, 36] <- max_counts.ii
+      day.vars[ii, 37] <- movingaves(x = counts.ii, window = 5, max = TRUE)
+      day.vars[ii, 38] <- movingaves(x = counts.ii, window = 10, max = TRUE)
+      day.vars[ii, 39] <- movingaves(x = counts.ii, window = 30, max = TRUE)
       
-      # MVPA and vigorous physical activity in >= 10-min bouts
-      dayvars[i,42] <- sum(day.boutedMVPA)
-      dayvars[i,43] <- sum(day.boutedvig)
-      dayvars[i,44] <- sum(dayvars[i,42:43])
+      # Minutes of bouted MVPA and bouted VPA
+      sum_bouted.MVPA.ii <- sum(bouted.MVPA.ii)
+      sum_bouted.VPA.ii <- sum(bouted.VPA.ii)
+      day.vars[ii, 42] <- sum_bouted.MVPA.ii
+      day.vars[ii, 43] <- sum_bouted.VPA.ii
       
-      if (dayvars[i,42] > 0) {
-        dayvars[i,40] <- sum(rle2(day.boutedMVPA)[,1] == 1)
+      # Guideline minutes
+      day.vars[ii, 44] <- sum_bouted.MVPA.ii + sum_bouted.VPA.ii
+      
+      # Number of MVPA and VPA bouts
+      if (sum_bouted.MVPA.ii > 0) {
+        day.vars[ii, 40] <- sum(rle2(bouted.MVPA.ii)[, 1] == 1)
       } else {
-        dayvars[i,40] <- 0
+        day.vars[ii, 40] <- 0
       }
-      if (dayvars[i,43] > 0) {
-        dayvars[i,41] <- sum(rle2(day.boutedMVPA)[,1] == 1)
+      if (sum_bouted.VPA.ii > 0) {
+        day.vars[ii, 41] <- sum(rle2(bouted.VPA)[, 1] == 1)
       } else {
-        dayvars[i,41] <- 0
+        day.vars[ii, 41] <- 0
       }
       
       if (brevity == 3) {
         
-        # Hourly counts/min averages
-        if (daylength == 1440) {
-          dayvars[i,45:68] <- blockaves(x = day.counts, window = 60, skipchecks = TRUE)
+        # Hourly variable - first analyze all minutes
+        if (hourly_var == "counts") {
+          day.vars[ii, 45: 68] <- blocksums(x = counts.ii * wearflag.ii, 
+                                            window = 60)
+        } else if (hourly_var == "cpm") {
+          day.vars[ii, 45: 68] <- blockaves(x = counts.ii * wearflag.ii, 
+                                            window = 60)
+        } else if (hourly_var == "sed_min") {
+          day.vars[ii, 45: 68] <- blocksums(x = counts.ii < int_cuts[1], window = 60)
+        } else if (hourly_var == "sed_bouted_10min") {
+          day.vars[ii, 45: 68] <- blocksums(x = bouted.sed10.ii, window = 60)
+        } else if (hourly_var == "sed_breaks") {
+          sedbreaks.ii <- sedbreaks(counts = counts.ii, weartime = wearflag.ii, 
+                                    flags = TRUE)
+          day.vars[ii, 45: 68] <- blocksums(x = sedbreaks.ii, window = 60)
+        }
+        
+        # Calculate hourly wear time if necessary
+        if (hourly_normalize | hourly_wearmin > 0) {
+          hourly.weartime <- blocksums(x = wearflag.ii, window = 60)
+        }
+        
+        # Normalize for wear time if requested
+        if (hourly_normalize) {
+          day.vars[ii, 45: 68] <- day.vars[ii, 45: 68] / hourly.weartime
+        }
+        
+        # Replace with NAs where wear time is insufficient
+        if (hourly_wearmin > 0) {
+          day.vars[ii, 45: 68] <- day.vars[ii, 45: 68] * 
+            ifelse(hourly.weartime >= hourly_wearmin, 1, NA)
         }
         
       }
@@ -470,64 +491,110 @@ process_uni <-
     
   }
   
-  # Format matrix of daily physical activity variables
-  colnames(dayvars) <- c("id", "day", "valid_day", "valid_min", "counts", "cpm", "steps", "sed_min", "light_min", "life_min", 
-                         "mod_min", "vig_min", "lightlife_min", "mvpa_min", "active_min", "sed_percent", "light_percent", 
-                         "life_percent", "mod_percent", "vig_percent", "lightlife_percent", "mvpa_percent", "active_percent", 
-                         "sed_counts", "light_counts", "life_counts", "mod_counts", "vig_counts", "lightlife_counts", 
-                         "mvpa_counts", "active_counts", "sed_bouted_10min", "sed_bouted_30min", "sed_bouted_60min", 
-                         "sed_breaks", "max_1min_counts", "max_5min_counts", "max_10min_counts", "max_30min_counts", 
-                         "num_mvpa_bouts", "num_vig_bouts", "mvpa_bouted", "vig_bouted", "guideline_min", "cpm_hour1", 
-                         "cpm_hour2", "cpm_hour3", "cpm_hour4", "cpm_hour5", "cpm_hour6", "cpm_hour7", "cpm_hour8", "cpm_hour9", 
-                         "cpm_hour10", "cpm_hour11", "cpm_hour12", "cpm_hour13", "cpm_hour14", "cpm_hour15", "cpm_hour16", 
-                         "cpm_hour17", "cpm_hour18", "cpm_hour19", "cpm_hour20", "cpm_hour21", "cpm_hour22", "cpm_hour23", 
-                         "cpm_hour24")
-  
-  # Drop variables according to brevity setting
+  # Format day.vars
   if (brevity == 1) {
-    dayvars <- dayvars[,1:7]
+    
+    day.vars <- day.vars[, 1: 7]
+    colnames(day.vars) <- 
+      c("id", "day", "valid_day", "valid_min", "counts", "cpm", "steps")
+  
   } else if (brevity == 2) {
-    dayvars <- dayvars[,1:44]
+    
+    day.vars <- day.vars[, 1: 44]
+    colnames(day.vars) <- 
+      c("id", "day", "valid_day", "valid_min", "counts", "cpm", "steps", 
+        "sed_min", "light_min", "life_min", "mod_min", "vig_min", 
+        "lightlife_min", "mvpa_min", "active_min", "sed_percent", 
+        "light_percent", "life_percent", "mod_percent", "vig_percent", 
+        "lightlife_percent", "mvpa_percent", "active_percent", "sed_counts", 
+        "light_counts", "life_counts", "mod_counts", "vig_counts", 
+        "lightlife_counts", "mvpa_counts", "active_counts", "sed_bouted_10min", 
+        "sed_bouted_30min", "sed_bouted_60min", "sed_breaks", "max_1min_counts", 
+        "max_5min_counts", "max_10min_counts", "max_30min_counts", 
+        "num_mvpa_bouts", "num_vig_bouts", "mvpa_bouted", "vig_bouted", 
+        "guideline_min")
+    
+  } else if (brevity == 3) {
+    
+    colnames(day.vars) <- 
+      c("id", "day", "valid_day", "valid_min", "counts", "cpm", "steps", 
+        "sed_min", "light_min", "life_min", "mod_min", "vig_min", 
+        "lightlife_min", "mvpa_min", "active_min", "sed_percent", 
+        "light_percent", "life_percent", "mod_percent", "vig_percent", 
+        "lightlife_percent", "mvpa_percent", "active_percent", "sed_counts", 
+        "light_counts", "life_counts", "mod_counts", "vig_counts", 
+        "lightlife_counts", "mvpa_counts", "active_counts", "sed_bouted_10min", 
+        "sed_bouted_30min", "sed_bouted_60min", "sed_breaks", "max_1min_counts", 
+        "max_5min_counts", "max_10min_counts", "max_30min_counts", 
+        "num_mvpa_bouts", "num_vig_bouts", "mvpa_bouted", "vig_bouted", 
+        "guideline_min", paste(hourly_var, "_hour", 1: 24, sep = ""))
+    
   }
   
   # Drop steps if NULL
-  if (is.null(steps)) {
-    dayvars <- dayvars[, -7, drop = FALSE]
+  if (! have.steps) {
+    day.vars <- day.vars[, -7, drop = FALSE]
   }
   
   # Calculate daily averages
-  locs.valid <- which(dayvars[,3] == 1)
-  locs.valid.wk <- which(dayvars[,3] == 1 & dayvars[,2] %in% 2:6)
-  locs.valid.we <- which(dayvars[,3] == 1 & dayvars[,2] %in% c(1, 7))
+  locs.valid <- which(day.vars[, 3] == 1)
+  locs.valid.wk <- which(day.vars[, 3] == 1 & day.vars[, 2] %in% 2: 6)
+  locs.valid.we <- which(day.vars[, 3] == 1 & day.vars[, 2] %in% c(1, 7))
+  n.valid <- length(locs.valid)
+  n.valid.wk <- length(locs.valid.wk)
+  n.valid.we <- length(locs.valid.we)
   
-  # If weekday.weekend is FALSE, just calculate overall averages
-  if (weekday.weekend == FALSE) {
-    averages <- c(id = id, valid_days = length(locs.valid), include = 0, colMeans(x = dayvars[locs.valid,4:ncol(dayvars), drop = FALSE]))
-    if (length(locs.valid) >= valid.days & length(locs.valid.wk) >= valid.week.days & length(locs.valid.we) >= valid.weekend.days) {
+  if (! weekday_weekend) {
+    
+    # Just calculate averages across all valid days
+    averages <- 
+      c(id = id, valid_days = n.valid, include = 0, 
+        colMeans(x = day.vars[locs.valid, 4: ncol(day.vars), drop = FALSE]))
+    
+    if (n.valid >= valid_days &&  n.valid.wk >= valid_week_days && 
+        n.valid.we >= valid_weekend_days) {
       averages[3] <- 1
     }
+    
+    # If cpm_nci is TRUE, re-calculate daily average for counts per minute
+    if (cpm_nci) {
+      averages["cpm"] <- averages["counts"] / averages["valid_min"]
+    }
+    
   } else {
     
-    # Otherwise calculate averages by all valid days and by valid weekdays and valid weekend days
-    averages <- c(id = id, valid_days = length(locs.valid), valid_week_days = length(locs.valid.wk),
-                  valid_weekend_days = length(locs.valid.we), include = 0,
-                  colMeans(x = dayvars[locs.valid,4:ncol(dayvars)]),
-                  colMeans(x = dayvars[locs.valid.wk,4:ncol(dayvars)]),
-                  colMeans(x = dayvars[locs.valid.we,4:ncol(dayvars)]))
-    if (length(locs.valid) >= valid.days & length(locs.valid.wk) >= valid.week.days & length(locs.valid.we) >= valid.weekend.days) {
+    # Calculate averages for all valid days and for weekdays/weekends
+    ncol_day.vars <- ncol(day.vars)
+    averages <- 
+      c(id = id, valid_days = n.valid, valid_week_days = n.valid.wk, 
+        valid_weekend_days = n.valid.we, include = 0, 
+        colMeans(x = day.vars[locs.valid, 4: ncol_day.vars, drop = FALSE]),
+        colMeans(x = day.vars[locs.valid.wk, 4: ncol_day.vars, drop = FALSE]),
+        colMeans(x = day.vars[locs.valid.we, 4: ncol_day.vars, drop = FALSE]))
+    
+    if (n.valid >= valid_days && n.valid.wk >= valid_week_days && 
+        n.valid.we >= valid_weekend_days) {
       averages[5] <- 1
+      
     }
     
     # Modify variable names for weekdays and weekends
-    numvars <- (length(averages)-5)/3
-    names(averages)[(6+numvars):(6+2*numvars-1)] <- paste("wk_", names(averages)[(6+numvars):(6+2*numvars-1)], sep = "")
-    names(averages)[(6+2*numvars):(6+3*numvars-1)] <- paste("we_", names(averages)[(6+2*numvars):(6+3*numvars-1)], sep = "")
+    n.vars <- (length(averages) - 5) / 3
     
-  }
-  
-  # If cpm.nci is TRUE, re-calculate averages for cpm variables
-  if (cpm.nci == TRUE) {
-    averages["cpm"] <- averages["counts"]/averages["valid_min"]
+    indices <- (6 + n.vars): (6 + 2 * n.vars - 1)
+    var.names <- names(averages)[indices]
+    names(averages)[indices] <- paste("wk_", var.names, sep = "")
+    
+    indices2 <- (6 + 2 * n.vars): (6 + 3 * n.vars - 1)
+    names(averages)[indices2] <- paste("we_", var.names, sep = "")
+    
+    # If cpm_nci is TRUE, re-calculate daily average for counts per minute
+    if (cpm_nci) {
+      averages["cpm"] <- averages["counts"] / averages["valid_min"]
+      averages["wk_cpm"] <- averages["wk_counts"] / averages["wk_valid_min"]
+      averages["we_cpm"] <- averages["we_counts"] / averages["we_valid_min"]
+    }
+    
   }
   
   # Convert averages to matrix for the hell of it
@@ -535,12 +602,11 @@ process_uni <-
   
   
   # Return data frame(s)
-  if (return.form == 1) {
+  if (return_form == 1) {
     return(averages)
-  } else if (return.form == 2) {
-    return (dayvars)
-  } else if (return.form == 3) {
-    retlist <- list(averages = averages, dayvars = dayvars)
-    return(retlist)
+  } else if (return_form == 2) {
+    return (day.vars)
+  } else if (return_form == 3) {
+    return(list(averages = averages, day.vars = day.vars))
   }
-  }
+}

@@ -33,7 +33,7 @@ outside of intensity range during an activity bout.}
 \item{tol_upper}{Integer value specifying upper cut-off for count values 
 outside of intensity range during an activity bout.}
 
-\item{nci}{Logical value for whether to use algorithm from the NCI's SAS 
+\item{nci}{Logical value for whether to use algorithm from NCI's SAS 
 programs. See \bold{Details}.}
 
 \item{days_distinct}{Logical value for whether to treat each day of data as 

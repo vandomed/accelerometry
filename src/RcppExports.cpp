@@ -65,6 +65,54 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// blocksums_i
+NumericVector blocksums_i(IntegerVector x, int window);
+RcppExport SEXP _accelerometry_blocksums_i(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(blocksums_i(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
+// blocksums_i_max
+NumericVector blocksums_i_max(IntegerVector x, int window);
+RcppExport SEXP _accelerometry_blocksums_i_max(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(blocksums_i_max(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
+// blocksums_n
+NumericVector blocksums_n(NumericVector x, int window);
+RcppExport SEXP _accelerometry_blocksums_n(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(blocksums_n(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
+// blocksums_n_max
+NumericVector blocksums_n_max(NumericVector x, int window);
+RcppExport SEXP _accelerometry_blocksums_n_max(SEXP xSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(blocksums_n_max(x, window));
+    return rcpp_result_gen;
+END_RCPP
+}
 // bouts
 IntegerVector bouts(IntegerVector counts, Rcpp::Nullable<Rcpp::IntegerVector> weartime, int bout_length, int thresh_lower, int thresh_upper, int tol, int tol_lower, int tol_upper, bool nci, bool days_distinct);
 RcppExport SEXP _accelerometry_bouts(SEXP countsSEXP, SEXP weartimeSEXP, SEXP bout_lengthSEXP, SEXP thresh_lowerSEXP, SEXP thresh_upperSEXP, SEXP tolSEXP, SEXP tol_lowerSEXP, SEXP tol_upperSEXP, SEXP nciSEXP, SEXP days_distinctSEXP) {
@@ -85,15 +133,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// intensities
-IntegerVector intensities(IntegerVector counts, IntegerVector thresh);
-RcppExport SEXP _accelerometry_intensities(SEXP countsSEXP, SEXP threshSEXP) {
+// cut_counts
+IntegerVector cut_counts(IntegerVector counts, IntegerVector int_cuts);
+RcppExport SEXP _accelerometry_cut_counts(SEXP countsSEXP, SEXP int_cutsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< IntegerVector >::type counts(countsSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type thresh(threshSEXP);
-    rcpp_result_gen = Rcpp::wrap(intensities(counts, thresh));
+    Rcpp::traits::input_parameter< IntegerVector >::type int_cuts(int_cutsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cut_counts(counts, int_cuts));
+    return rcpp_result_gen;
+END_RCPP
+}
+// intensities
+IntegerVector intensities(IntegerVector counts, IntegerVector int_cuts);
+RcppExport SEXP _accelerometry_intensities(SEXP countsSEXP, SEXP int_cutsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type counts(countsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type int_cuts(int_cutsSEXP);
+    rcpp_result_gen = Rcpp::wrap(intensities(counts, int_cuts));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -234,7 +294,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_accelerometry_blockaves_i_max", (DL_FUNC) &_accelerometry_blockaves_i_max, 2},
     {"_accelerometry_blockaves_n", (DL_FUNC) &_accelerometry_blockaves_n, 2},
     {"_accelerometry_blockaves_n_max", (DL_FUNC) &_accelerometry_blockaves_n_max, 2},
+    {"_accelerometry_blocksums_i", (DL_FUNC) &_accelerometry_blocksums_i, 2},
+    {"_accelerometry_blocksums_i_max", (DL_FUNC) &_accelerometry_blocksums_i_max, 2},
+    {"_accelerometry_blocksums_n", (DL_FUNC) &_accelerometry_blocksums_n, 2},
+    {"_accelerometry_blocksums_n_max", (DL_FUNC) &_accelerometry_blocksums_n_max, 2},
     {"_accelerometry_bouts", (DL_FUNC) &_accelerometry_bouts, 10},
+    {"_accelerometry_cut_counts", (DL_FUNC) &_accelerometry_cut_counts, 2},
     {"_accelerometry_intensities", (DL_FUNC) &_accelerometry_intensities, 2},
     {"_accelerometry_movingaves_i", (DL_FUNC) &_accelerometry_movingaves_i, 2},
     {"_accelerometry_movingaves_i_max", (DL_FUNC) &_accelerometry_movingaves_i_max, 2},

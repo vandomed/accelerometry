@@ -58,6 +58,22 @@ blockaves_n_max <- function(x, window) {
     .Call(`_accelerometry_blockaves_n_max`, x, window)
 }
 
+blocksums_i <- function(x, window) {
+    .Call(`_accelerometry_blocksums_i`, x, window)
+}
+
+blocksums_i_max <- function(x, window) {
+    .Call(`_accelerometry_blocksums_i_max`, x, window)
+}
+
+blocksums_n <- function(x, window) {
+    .Call(`_accelerometry_blocksums_n`, x, window)
+}
+
+blocksums_n_max <- function(x, window) {
+    .Call(`_accelerometry_blocksums_n_max`, x, window)
+}
+
 #' Physical Activity Bout Detection
 #' 
 #' Identify bouts of physical activity based on a vector of accelerometer count 
@@ -152,6 +168,41 @@ bouts <- function(counts, weartime = NULL, bout_length = 10L, thresh_lower = 0L,
     .Call(`_accelerometry_bouts`, counts, weartime, bout_length, thresh_lower, thresh_upper, tol, tol_lower, tol_upper, nci, days_distinct)
 }
 
+#' Cut Count Values into Intensity Ranges
+#' 
+#' Given a vector of accelerometer count values, classifies each count value 
+#' into intensity level 1, 2, 3, 4, or 5 (typically representing sedentary, 
+#' light, lifestyle, moderate, and vigorous).
+#' 
+#' 
+#' @inheritParams artifacts
+#' 
+#' @param int_cuts Numeric vector with four cutpoints from which five intensity 
+#' ranges are derived. For example, \code{int_cuts = c(100, 760, 2020, 5999)} 
+#' creates: 0-99 = intensity 1; 100-759 = intensity level 2; 760-2019 = 
+#' intensity 3; 2020-5998 = intensity 4; >= 5999 = intensity 5.
+#' 
+#' 
+#' @return Integer vector.
+#' 
+#' 
+#' @examples
+#' # Load accelerometer data for first 5 participants in NHANES 2003-2004
+#' data(unidata)
+#' 
+#' # Get data from ID number 21005
+#' counts.part1 <- unidata[unidata[, "seqn"] == 21005, "paxinten"]
+#' 
+#' # Cut into 5 intensity levels and plot
+#' intensity.part1 <- cut_counts(counts = counts.part1)
+#' plot(intensity.part1)
+#' 
+#' 
+#' @export
+cut_counts <- function(counts, int_cuts = as.integer( c(100, 760, 2020, 5999))) {
+    .Call(`_accelerometry_cut_counts`, counts, int_cuts)
+}
+
 #' Physical Activity Intensities
 #' 
 #' Given a vector of accelerometer count values, calculates time spent in 5 
@@ -164,8 +215,8 @@ bouts <- function(counts, weartime = NULL, bout_length = 10L, thresh_lower = 0L,
 #' 
 #' @inheritParams artifacts
 #' 
-#' @param thresh Numeric vector with four cutpoints from which five intensity 
-#' ranges are derived. For example, \code{thresh = c(100, 760, 2020, 5999)} 
+#' @param int_cuts Numeric vector with four cutpoints from which five intensity 
+#' ranges are derived. For example, \code{int_cuts = c(100, 760, 2020, 5999)} 
 #' creates: 0-99 = intensity 1; 100-759 = intensity level 2; 760-2019 = 
 #' intensity 3; 2020-5998 = intensity 4; >= 5999 = intensity 5.
 #' 
@@ -190,8 +241,8 @@ bouts <- function(counts, weartime = NULL, bout_length = 10L, thresh_lower = 0L,
 #' 
 #' 
 #' @export
-intensities <- function(counts, thresh = as.integer( c(100, 760, 2020, 5999))) {
-    .Call(`_accelerometry_intensities`, counts, thresh)
+intensities <- function(counts, int_cuts = as.integer( c(100, 760, 2020, 5999))) {
+    .Call(`_accelerometry_intensities`, counts, int_cuts)
 }
 
 movingaves_i <- function(x, window) {
@@ -265,7 +316,7 @@ sedbreaks_flags <- function(counts, weartime, thresh) {
 #' period as an interval of length \code{window} that starts with a count value 
 #' of 0, does not contain any periods with \code{(tol + 1)} consecutive 
 #' non-zero count values, and does not contain any counts > \code{tol.upper}. 
-#' If these criteria are met, the bout continues until there are 
+#' If these criteria are met, the non-wear period continues until there are 
 #' \code{(tol + 1)} consecutive non-zero count values or a single count value > 
 #' \code{tol.upper}.
 #' 
@@ -273,15 +324,16 @@ sedbreaks_flags <- function(counts, weartime, thresh) {
 #' @param counts Integer vector with accelerometer count values.
 #'
 #' @param window Integer value specifying minimum length of a non-wear 
-#' interval.
+#' period.
 #' 
-#' @param tol Integer value specifying tolerance, i.e. number of 
-#' seconds/minutes with non-zero counts allowed during a non-wear interval.
+#' @param tol Integer value specifying tolerance for non-wear algorithm, i.e. 
+#' number of seconds/minutes with non-zero counts allowed during a non-wear 
+#' interval.
 #' 
 #' @param tol_upper Integer value specifying maximum count value for a 
 #' second/minute with non-zero counts during a non-wear interval.
 #' 
-#' @param nci Logical value for whether to use algorithm from the NCI's SAS 
+#' @param nci Logical value for whether to use algorithm from NCI's SAS 
 #' programs. See \bold{Details}.
 #' 
 #' @param days_distinct Logical value for whether to treat each day of data as 

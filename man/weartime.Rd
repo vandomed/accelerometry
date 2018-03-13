@@ -11,15 +11,16 @@ weartime(counts, window = 60L, tol = 0L, tol_upper = 99L, nci = FALSE,
 \item{counts}{Integer vector with accelerometer count values.}
 
 \item{window}{Integer value specifying minimum length of a non-wear 
-interval.}
+period.}
 
-\item{tol}{Integer value specifying tolerance, i.e. number of 
-seconds/minutes with non-zero counts allowed during a non-wear interval.}
+\item{tol}{Integer value specifying tolerance for non-wear algorithm, i.e. 
+number of seconds/minutes with non-zero counts allowed during a non-wear 
+interval.}
 
 \item{tol_upper}{Integer value specifying maximum count value for a 
 second/minute with non-zero counts during a non-wear interval.}
 
-\item{nci}{Logical value for whether to use algorithm from the NCI's SAS 
+\item{nci}{Logical value for whether to use algorithm from NCI's SAS 
 programs. See \bold{Details}.}
 
 \item{days_distinct}{Logical value for whether to treat each day of data as 
@@ -50,7 +51,7 @@ used in the NCI's SAS programs. Briefly, this algorithm defines a non-wear
 period as an interval of length \code{window} that starts with a count value 
 of 0, does not contain any periods with \code{(tol + 1)} consecutive 
 non-zero count values, and does not contain any counts > \code{tol.upper}. 
-If these criteria are met, the bout continues until there are 
+If these criteria are met, the non-wear period continues until there are 
 \code{(tol + 1)} consecutive non-zero count values or a single count value > 
 \code{tol.upper}.
 }
