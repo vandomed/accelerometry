@@ -1,6 +1,6 @@
 #' Uniaxial Sample Data
 #' 
-#' Accelerometer Data for the first 5 participants in the National Health and 
+#' Accelerometer data for the first 5 participants in the National Health and 
 #' Nutrition Examination Survey (NHANES) 2003-2004 dataset. 
 #' 
 #' @name unidata
