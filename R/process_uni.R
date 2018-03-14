@@ -5,7 +5,7 @@
 #' Assumes first 1440 minutes are day 1, next 1440 are day 2, and so on. If 
 #' final day has less than 1440 minutes, it is excluded. A data dictionary for 
 #' the variables created is available here: 
-#' \url{https://sites.google.com/site/danevandomelen/r-package-accelerometry/data-dictionary}.
+#' \url{https://vandomed.github.io/process_uni_dictionary}.
 #' 
 #' 
 #' @param counts Integer vector with accelerometer count values.
