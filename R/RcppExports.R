@@ -266,12 +266,16 @@ movingaves_n_max <- function(x, window) {
 #' Not intended for direct use.
 #' 
 #' @param dayvars Numeric matrix with daily physical activity variables.
+#' 
 #' @param rows Numeric value specifying number of rows in the matrix to be 
 #' returned.
+#' 
 #' @param days Integer value specifying minimum number of valid days a 
 #' participant must have to be included.
+#' 
 #' @param wk Integer value specifying minimum number of valid weekdays a 
 #' participant must have to be included.
+#' 
 #' @param we Integer value specifying minimum number of valid weekend days a 
 #' participant must have to be included.
 #' 
@@ -342,8 +346,8 @@ sedbreaks_flags <- function(counts, weartime, thresh) {
 #' to \code{FALSE} to correctly classify time near midnight.
 #' 
 #' @param units_day Integer value specifying how many data point are in a day. 
-#' Typically either \code{1440} or \code{86400} depending on whether count 
-#' values are minute-to-minute or second-to-second.
+#' Typically either 1440 or 86400 depending on whether count values are 
+#' minute-to-minute or second-to-second.
 #' 
 #' 
 #' @return Integer vector with 1's for valid wear time and 0's for non-wear 

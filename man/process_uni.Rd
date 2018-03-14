@@ -11,9 +11,8 @@ process_uni(counts, steps = NULL, nci_methods = FALSE, start_day = 1,
   2020, 5999), cpm_nci = FALSE, days_distinct = FALSE,
   nonwear_window = 60, nonwear_tol = 0, nonwear_tol_upper = 99,
   nonwear_nci = FALSE, weartime_minimum = 600, weartime_maximum = 1440,
-  partialday_minimum = 1440, active_bout_length = 10, active_bout_tol = 0,
-  mvpa_bout_tol_lower = 0, vig_bout_tol_lower = 0,
-  active_bout_nci = FALSE, sed_bout_tol = 0,
+  active_bout_length = 10, active_bout_tol = 0, mvpa_bout_tol_lower = 0,
+  vig_bout_tol_lower = 0, active_bout_nci = FALSE, sed_bout_tol = 0,
   sed_bout_tol_maximum = int_cuts[2] - 1, artifact_thresh = 25000,
   artifact_action = 1, weekday_weekend = FALSE, return_form = 2)
 }
@@ -49,8 +48,6 @@ specifically:
 \code{weartime_minimum = 600}
 
 \code{weartime_maximum = 1440}
-
-\code{partialday_minimum = 1440}
 
 \code{active_bout_length = 10}
 
@@ -139,6 +136,11 @@ NCI's SAS programs.}
 \item{weartime_minimum}{Integer value specifying minimum number of wear time 
 minutes for a day to be considered valid.}
 
+\item{weartime_maximum}{Integer value specifying maximum number of wear time 
+minutes for a day to be considered valid. The default is 1440, but you may 
+want to use a lower value (e.g. 1200) if participants were instructed to 
+remove devices for sleeping, but often did not.}
+
 \item{active_bout_length}{Integer value specifying minimum length of an 
 active bout.}
 
@@ -180,11 +182,6 @@ weekdays and weekend days separately (in addition to all valid days).}
 Choices are \code{1} for per-person basis (i.e. averages for each 
 participant across valid days), \code{2} for per-day basis, and \code{3} for 
 both.}
-
-\item{weartime.maximum}{Integer value specifying maximum number of wear time 
-minutes for a day to be considered valid. The default is 1440, but you may 
-want to use a lower value (e.g. 1200) if participants were instructed to 
-remove devices for sleeping, but often did not.}
 }
 \value{
 Numeric matrix or list of two numeric matrices, depending on 

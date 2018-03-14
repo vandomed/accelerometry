@@ -12,7 +12,7 @@
 #' 
 #' @param steps Integer vector with steps.
 #' 
-#' @param nci_methods Logical value for whether to set all arguments such as to 
+#' @param nci_methods Logical value for whether to set all arguments so as to 
 #' replicate the data processing methods used in the NCI's SAS programs. More 
 #' specifically: 
 #' 
@@ -32,15 +32,13 @@
 #' 
 #' \code{nonwear_tol = 2}
 #' 
-#' \code{nonwear_tol.upper = 100}
+#' \code{nonwear_tolupper = 100}
 #' 
 #' \code{nonwear_nci = TRUE}
 #' 
 #' \code{weartime_minimum = 600}
 #' 
 #' \code{weartime_maximum = 1440}
-#' 
-#' \code{partialday_minimum = 1440}
 #' 
 #' \code{active_bout_length = 10}
 #' 
@@ -60,8 +58,8 @@
 #' 
 #' \code{artifact_action = 3}
 #' 
-#' If \code{TRUE}, you can still specify non-default values for \code{brevity}, 
-#' \code{weekday_weekend}, and \code{return_form}.
+#' If \code{TRUE}, you can still specify non-default values for \code{brevity} 
+#' and \code{weekday_weekend}.
 #' 
 #' @param start_day Integer value specifying day of week for first day of 
 #' monitoring, with 1 = Sunday, ..., 7 = Satuday.
@@ -72,10 +70,10 @@
 #' @param id Numeric value specifying ID number of participant. 
 #' 
 #' @param brevity Integer value controlling the number of physical activity 
-#' variables that are returned. Choices are \code{1} for basic indicators of 
-#' physical activity volume, \code{2} for addditional indicators of activity 
-#' intensities, activity bouts, sedentary behavior, and peak activity, and 
-#' \code{3} for additional hourly count averages.
+#' variables generated. Choices are 1 for basic indicators of physical activity 
+#' volume, 2 for addditional indicators of activity intensities, activity bouts, 
+#' sedentary behavior, and peak activity, and 3 for additional hourly count 
+#' averages.
 #' 
 #' @param hourly_var Character string specifying what hourly activity variable 
 #' to record, if \code{brevity = 3}. Choices are "counts", "cpm", "sed_min", 
@@ -104,8 +102,8 @@
 #' are typically viewed as sedentary, light, lifestyle, moderate, and vigorous.
 #' 
 #' @param cpm_nci Logical value for whether to calculate average counts per 
-#' minute by dividing average daily counts by average daily weartime, as opposed 
-#' to taking the average of each day's counts per minute value. Strongly 
+#' minute by dividing average daily counts by average daily wear time, as 
+#' opposed to taking the average of each day's counts per minute value. Strongly 
 #' recommend leave as \code{FALSE} unless you wish to replicate the NCI's SAS 
 #' programs.
 #' 
@@ -129,7 +127,7 @@
 #' @param weartime_minimum Integer value specifying minimum number of wear time 
 #' minutes for a day to be considered valid.
 #' 
-#' @param weartime.maximum Integer value specifying maximum number of wear time 
+#' @param weartime_maximum Integer value specifying maximum number of wear time 
 #' minutes for a day to be considered valid. The default is 1440, but you may 
 #' want to use a lower value (e.g. 1200) if participants were instructed to 
 #' remove devices for sleeping, but often did not.
@@ -140,7 +138,7 @@
 #' @param active_bout_tol Integer value specifying number of minutes with counts 
 #' outside the required range to allow during an active bout. If non-zero and 
 #' \code{active_bout_nci = FALSE}, specifying non-zero values for 
-#' \code{mvpa.bout.tol.lower} and \code{vig.bout.tol.lower} is highly 
+#' \code{mvpa_bout_tol_lower} and \code{vig_bout_tol_lower} is highly 
 #' recommended. Otherwise minutes immediately before and after an active bout 
 #' will tend to be classified as part of the bout.
 #' 
@@ -163,18 +161,16 @@
 #' should be considered an artifact.
 #' 
 #' @param artifact_action Integer value controlling method of correcting 
-#' artifacts. Choices are \code{1} to exclude days with one or more artifacts, 
-#' \code{2} to lump artifacts into non-wear time, \code{3} to replace artifacts 
-#' with the average of neighboring count values, and \code{4} to take no action
-#' (see \bold{Note}).
+#' artifacts. Choices are 1 to exclude days with one or more artifacts, 2 to 
+#' lump artifacts into non-wear time, 3 to replace artifacts with the average of 
+#' neighboring count values, and 4 to take no action.
 #' 
 #' @param weekday_weekend Logical value for whether to calculate averages for 
 #' weekdays and weekend days separately (in addition to all valid days). 
 #' 
 #' @param return_form Integer value controlling how variables are returned. 
-#' Choices are \code{1} for per-person basis (i.e. averages for each 
-#' participant across valid days), \code{2} for per-day basis, and \code{3} for 
-#' both. 
+#' Choices are 1 for per-person basis (i.e. averages for each participant across 
+#' valid days), 2 for per-day basis, and 3 for both. 
 #' 
 #' 
 #' @return
@@ -214,34 +210,34 @@
 #' accel.nci2 <- process_uni(counts = counts.part1, id = id.part1, 
 #'                           nci_methods = TRUE, brevity = 2, return_form = 3)
 #'                           
-#' # Verify that previous two function calls give identical results
+#' # Results are identical
 #' all(accel.nci1[[1]] == accel.nci2[[1]])
 #' all(accel.nci1[[2]] == accel.nci2[[2]])
 #' 
 #' 
 #' @export
 process_uni <- function(counts, steps = NULL, 
-           nci_methods = FALSE, 
-           start_day = 1, start_date = NULL, 
-           id = NULL, 
-           brevity = 1, 
-           hourly_var = "cpm", hourly_wearmin = 0, hourly_normalize = TRUE, 
-           valid_days = 1, valid_week_days = 0, valid_weekend_days = 0, 
-           int_cuts = c(100, 760, 2020, 5999), 
-           cpm_nci = FALSE, 
-           days_distinct = FALSE, 
-           nonwear_window = 60, nonwear_tol = 0, nonwear_tol_upper = 99, 
-           nonwear_nci = FALSE, 
-           weartime_minimum = 600, weartime_maximum = 1440, 
-           partialday_minimum = 1440, 
-           active_bout_length = 10, active_bout_tol = 0, 
-           mvpa_bout_tol_lower = 0, vig_bout_tol_lower = 0, 
-           active_bout_nci = FALSE, sed_bout_tol = 0, 
-           sed_bout_tol_maximum = int_cuts[2] - 1, 
-           artifact_thresh = 25000, artifact_action = 1, 
-           weekday_weekend = FALSE, return_form = 2) {
+                        nci_methods = FALSE, 
+                        start_day = 1, start_date = NULL, 
+                        id = NULL, 
+                        brevity = 1, 
+                        hourly_var = "cpm", hourly_wearmin = 0, 
+                        hourly_normalize = FALSE, 
+                        valid_days = 1, valid_week_days = 0, valid_weekend_days = 0, 
+                        int_cuts = c(100, 760, 2020, 5999), 
+                        cpm_nci = FALSE, 
+                        days_distinct = FALSE, 
+                        nonwear_window = 60, nonwear_tol = 0, nonwear_tol_upper = 99, 
+                        nonwear_nci = FALSE, 
+                        weartime_minimum = 600, weartime_maximum = 1440, 
+                        active_bout_length = 10, active_bout_tol = 0, 
+                        mvpa_bout_tol_lower = 0, vig_bout_tol_lower = 0, 
+                        active_bout_nci = FALSE, sed_bout_tol = 0, 
+                        sed_bout_tol_maximum = int_cuts[2] - 1, 
+                        artifact_thresh = 25000, artifact_action = 1, 
+                        weekday_weekend = FALSE, return_form = 2) {
   
-  # If nci_methods is TRUE, set inputs to mimic NCI's SAS programs
+  # If requested, set inputs to mimic NCI's SAS programs
   if (nci_methods) {
     
     valid_days <- 4
@@ -272,14 +268,12 @@ process_uni <- function(counts, steps = NULL,
   n.minutes <- length(counts)
   end.indices <- seq(1440, n.minutes, 1440)
   start.indices <- end.indices - 1439
+  n.days <- length(start.indices)
   
   # Get single value for ID
   id <- ifelse(is.null(id), 1, id[1])
   
-  # Calculate number of full days of data
-  n.days <- length(start.indices)
-  
-  # Calculate acceptable range for weartime
+  # Calculate acceptable range for wear time
   weartime.range <- c(weartime_minimum, weartime_maximum)
   
   # Create variable for whether there steps is specified
@@ -288,7 +282,7 @@ process_uni <- function(counts, steps = NULL,
   # Initialize matrix to save daily physical activity variables
   day.vars <- matrix(NA, ncol = 68, nrow = n.days)
   
-  # If artifact.action = 3, replace minutes with counts > artifact.thresh with 
+  # If artifact_action = 3, replace minutes with counts >= artifact_thresh with 
   # average of surrounding minutes
   if (artifact_action == 3) {
     counts <- artifacts(counts = counts, thresh = artifact_thresh)
@@ -302,8 +296,8 @@ process_uni <- function(counts, steps = NULL,
                        nci = nonwear_nci,
                        days_distinct = days_distinct)
   
-  # If artifact.action = 2, consider minutes with counts >= artifact.thresh as 
-  # non-weartime
+  # If artifact_action = 2, consider minutes with counts >= artifact_thresh  
+  # non-wear time
   if (artifact_action == 2) {
     artifact.locs <- which(counts >= artifact_thresh)
     wearflag[artifact.locs] <- 0
@@ -387,7 +381,7 @@ process_uni <- function(counts, steps = NULL,
     # Wear time minutes
     day.vars[ii, 4] <- sum_wearflag.ii
     
-    # Create vector of counts during weartime
+    # Create vector of counts during wear time
     wearcounts.ii <- counts.ii[wearflag.ii == 1]
     
     # Total counts during wear time
@@ -446,7 +440,7 @@ process_uni <- function(counts, steps = NULL,
         day.vars[ii, 40] <- 0
       }
       if (sum_bouted.VPA.ii > 0) {
-        day.vars[ii, 41] <- sum(rle2(bouted.VPA)[, 1] == 1)
+        day.vars[ii, 41] <- sum(rle2(bouted.VPA.ii)[, 1] == 1)
       } else {
         day.vars[ii, 41] <- 0
       }
@@ -461,7 +455,8 @@ process_uni <- function(counts, steps = NULL,
           day.vars[ii, 45: 68] <- blockaves(x = counts.ii * wearflag.ii, 
                                             window = 60)
         } else if (hourly_var == "sed_min") {
-          day.vars[ii, 45: 68] <- blocksums(x = counts.ii < int_cuts[1], window = 60)
+          day.vars[ii, 45: 68] <- blocksums(x = counts.ii < int_cuts[1], 
+                                            window = 60)
         } else if (hourly_var == "sed_bouted_10min") {
           day.vars[ii, 45: 68] <- blocksums(x = bouted.sed10.ii, window = 60)
         } else if (hourly_var == "sed_breaks") {
@@ -471,7 +466,7 @@ process_uni <- function(counts, steps = NULL,
         }
         
         # Calculate hourly wear time if necessary
-        if (hourly_normalize | hourly_wearmin > 0) {
+        if (hourly_normalize || hourly_wearmin > 0) {
           hourly.weartime <- blocksums(x = wearflag.ii, window = 60)
         }
         
@@ -494,9 +489,9 @@ process_uni <- function(counts, steps = NULL,
   # Format day.vars
   if (brevity == 1) {
     
-    day.vars <- day.vars[, 1: 7]
+    day.vars <- day.vars[, 1: 6]
     colnames(day.vars) <- 
-      c("id", "day", "valid_day", "valid_min", "counts", "cpm", "steps")
+      c("id", "day", "valid_day", "valid_min", "counts", "cpm")
   
   } else if (brevity == 2) {
     

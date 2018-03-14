@@ -6,12 +6,16 @@ using namespace Rcpp;
 //' Not intended for direct use.
 //' 
 //' @param dayvars Numeric matrix with daily physical activity variables.
+//' 
 //' @param rows Numeric value specifying number of rows in the matrix to be 
 //' returned.
+//' 
 //' @param days Integer value specifying minimum number of valid days a 
 //' participant must have to be included.
+//' 
 //' @param wk Integer value specifying minimum number of valid weekdays a 
 //' participant must have to be included.
+//' 
 //' @param we Integer value specifying minimum number of valid weekend days a 
 //' participant must have to be included.
 //' 
