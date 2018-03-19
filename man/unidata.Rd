@@ -8,6 +8,6 @@
 \url{https://wwwn.cdc.gov/nchs/nhanes/search/datapage.aspx?Component=Examination&CycleBeginYear=2003}
 }
 \description{
-Accelerometer Data for the first 5 participants in the National Health and 
+Accelerometer data for the first 5 participants in the National Health and 
 Nutrition Examination Survey (NHANES) 2003-2004 dataset.
 }

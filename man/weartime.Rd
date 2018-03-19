@@ -29,8 +29,8 @@ continuous segment. For minute-to-minute counts, strongly recommend setting
 to \code{FALSE} to correctly classify time near midnight.}
 
 \item{units_day}{Integer value specifying how many data point are in a day. 
-Typically either \code{1440} or \code{86400} depending on whether count 
-values are minute-to-minute or second-to-second.}
+Typically either 1440 or 86400 depending on whether count values are 
+minute-to-minute or second-to-second.}
 }
 \value{
 Integer vector with 1's for valid wear time and 0's for non-wear 

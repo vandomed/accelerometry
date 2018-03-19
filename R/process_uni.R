@@ -544,7 +544,8 @@ process_uni <- function(counts, steps = NULL,
     # Just calculate averages across all valid days
     averages <- 
       c(id = id, valid_days = n.valid, include = 0, 
-        colMeans(x = day.vars[locs.valid, 4: ncol(day.vars), drop = FALSE]))
+        colMeans(x = day.vars[locs.valid, 4: ncol(day.vars), drop = FALSE], 
+                 na.rm = TRUE))
     
     if (n.valid >= valid_days &&  n.valid.wk >= valid_week_days && 
         n.valid.we >= valid_weekend_days) {
@@ -563,9 +564,9 @@ process_uni <- function(counts, steps = NULL,
     averages <- 
       c(id = id, valid_days = n.valid, valid_week_days = n.valid.wk, 
         valid_weekend_days = n.valid.we, include = 0, 
-        colMeans(x = day.vars[locs.valid, 4: ncol_day.vars, drop = FALSE]),
-        colMeans(x = day.vars[locs.valid.wk, 4: ncol_day.vars, drop = FALSE]),
-        colMeans(x = day.vars[locs.valid.we, 4: ncol_day.vars, drop = FALSE]))
+        colMeans(x = day.vars[locs.valid, 4: ncol_day.vars, drop = FALSE], na.rm = TRUE),
+        colMeans(x = day.vars[locs.valid.wk, 4: ncol_day.vars, drop = FALSE], na.rm = TRUE),
+        colMeans(x = day.vars[locs.valid.we, 4: ncol_day.vars, drop = FALSE], na.rm = TRUE))
     
     if (n.valid >= valid_days && n.valid.wk >= valid_week_days && 
         n.valid.we >= valid_weekend_days) {

@@ -6,7 +6,7 @@
 \usage{
 process_uni(counts, steps = NULL, nci_methods = FALSE, start_day = 1,
   start_date = NULL, id = NULL, brevity = 1, hourly_var = "cpm",
-  hourly_wearmin = 0, hourly_normalize = TRUE, valid_days = 1,
+  hourly_wearmin = 0, hourly_normalize = FALSE, valid_days = 1,
   valid_week_days = 0, valid_weekend_days = 0, int_cuts = c(100, 760,
   2020, 5999), cpm_nci = FALSE, days_distinct = FALSE,
   nonwear_window = 60, nonwear_tol = 0, nonwear_tol_upper = 99,
@@ -21,7 +21,7 @@ process_uni(counts, steps = NULL, nci_methods = FALSE, start_day = 1,
 
 \item{steps}{Integer vector with steps.}
 
-\item{nci_methods}{Logical value for whether to set all arguments such as to 
+\item{nci_methods}{Logical value for whether to set all arguments so as to 
 replicate the data processing methods used in the NCI's SAS programs. More 
 specifically: 
 
@@ -41,7 +41,7 @@ specifically:
 
 \code{nonwear_tol = 2}
 
-\code{nonwear_tol.upper = 100}
+\code{nonwear_tolupper = 100}
 
 \code{nonwear_nci = TRUE}
 
@@ -67,8 +67,8 @@ specifically:
 
 \code{artifact_action = 3}
 
-If \code{TRUE}, you can still specify non-default values for \code{brevity}, 
-\code{weekday_weekend}, and \code{return_form}.}
+If \code{TRUE}, you can still specify non-default values for \code{brevity} 
+and \code{weekday_weekend}.}
 
 \item{start_day}{Integer value specifying day of week for first day of 
 monitoring, with 1 = Sunday, ..., 7 = Satuday.}
@@ -79,10 +79,10 @@ figure out \code{start_day}.}
 \item{id}{Numeric value specifying ID number of participant.}
 
 \item{brevity}{Integer value controlling the number of physical activity 
-variables that are returned. Choices are \code{1} for basic indicators of 
-physical activity volume, \code{2} for addditional indicators of activity 
-intensities, activity bouts, sedentary behavior, and peak activity, and 
-\code{3} for additional hourly count averages.}
+variables generated. Choices are 1 for basic indicators of physical activity 
+volume, 2 for addditional indicators of activity intensities, activity bouts, 
+sedentary behavior, and peak activity, and 3 for additional hourly count 
+averages.}
 
 \item{hourly_var}{Character string specifying what hourly activity variable 
 to record, if \code{brevity = 3}. Choices are "counts", "cpm", "sed_min", 
@@ -111,8 +111,8 @@ intensity 3; 2020-5998 = intensity 4; >= 5999 = intensity 5. Intensities 1-5
 are typically viewed as sedentary, light, lifestyle, moderate, and vigorous.}
 
 \item{cpm_nci}{Logical value for whether to calculate average counts per 
-minute by dividing average daily counts by average daily weartime, as opposed 
-to taking the average of each day's counts per minute value. Strongly 
+minute by dividing average daily counts by average daily wear time, as 
+opposed to taking the average of each day's counts per minute value. Strongly 
 recommend leave as \code{FALSE} unless you wish to replicate the NCI's SAS 
 programs.}
 
@@ -147,7 +147,7 @@ active bout.}
 \item{active_bout_tol}{Integer value specifying number of minutes with counts 
 outside the required range to allow during an active bout. If non-zero and 
 \code{active_bout_nci = FALSE}, specifying non-zero values for 
-\code{mvpa.bout.tol.lower} and \code{vig.bout.tol.lower} is highly 
+\code{mvpa_bout_tol_lower} and \code{vig_bout_tol_lower} is highly 
 recommended. Otherwise minutes immediately before and after an active bout 
 will tend to be classified as part of the bout.}
 
@@ -170,18 +170,16 @@ values outside sedentary range during a sedentary bout.}
 should be considered an artifact.}
 
 \item{artifact_action}{Integer value controlling method of correcting 
-artifacts. Choices are \code{1} to exclude days with one or more artifacts, 
-\code{2} to lump artifacts into non-wear time, \code{3} to replace artifacts 
-with the average of neighboring count values, and \code{4} to take no action
-(see \bold{Note}).}
+artifacts. Choices are 1 to exclude days with one or more artifacts, 2 to 
+lump artifacts into non-wear time, 3 to replace artifacts with the average of 
+neighboring count values, and 4 to take no action.}
 
 \item{weekday_weekend}{Logical value for whether to calculate averages for 
 weekdays and weekend days separately (in addition to all valid days).}
 
 \item{return_form}{Integer value controlling how variables are returned. 
-Choices are \code{1} for per-person basis (i.e. averages for each 
-participant across valid days), \code{2} for per-day basis, and \code{3} for 
-both.}
+Choices are 1 for per-person basis (i.e. averages for each participant across 
+valid days), 2 for per-day basis, and 3 for both.}
 }
 \value{
 Numeric matrix or list of two numeric matrices, depending on 
@@ -193,7 +191,7 @@ minute-to-minute accelerometer count values for individual participants.
 Assumes first 1440 minutes are day 1, next 1440 are day 2, and so on. If 
 final day has less than 1440 minutes, it is excluded. A data dictionary for 
 the variables created is available here: 
-\url{https://sites.google.com/site/danevandomelen/r-package-accelerometry/data-dictionary}.
+\url{https://vandomed.github.io/process_uni_dictionary}.
 }
 \examples{
 # Load accelerometer data for first 5 participants in NHANES 2003-2004
@@ -227,7 +225,7 @@ accel.nci1 <- process_uni(counts = counts.part1, id = id.part1, brevity = 2,
 accel.nci2 <- process_uni(counts = counts.part1, id = id.part1, 
                           nci_methods = TRUE, brevity = 2, return_form = 3)
                           
-# Verify that previous two function calls give identical results
+# Results are identical
 all(accel.nci1[[1]] == accel.nci2[[1]])
 all(accel.nci1[[2]] == accel.nci2[[2]])
 
