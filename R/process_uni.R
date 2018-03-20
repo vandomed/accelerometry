@@ -146,7 +146,7 @@
 #' values outside of required intensity range for an MVPA bout.
 #' 
 #' @param vig_bout_tol_lower Integer value specifying lower cut-off for count 
-#' values outside of required intensity range for a VPA bout.
+#' values outside of required intensity range for a vigorous bout.
 #' 
 #' @param active_bout_nci Logical value for whether to use algorithm from the 
 #' NCI's SAS programs for classifying active bouts.
@@ -301,7 +301,7 @@ process_uni <- function(counts, steps = NULL,
     counts[artifact.locs] <- 0
   }
   
-  # Identify bouts of MVPA, VPA, and sedentary time
+  # Identify MVPA, vigorous, and sedentary bouts
   if (brevity %in% c(2, 3)) {
     
     bouted.MVPA <- 
@@ -310,7 +310,7 @@ process_uni <- function(counts, steps = NULL,
             tol = active_bout_tol, tol_lower = mvpa_bout_tol_lower,
             nci = active_bout_nci, days_distinct = days_distinct)
     
-    bouted.VPA <- 
+    bouted.vig <- 
       bouts(counts = counts, weartime = wearflag, 
             bout_length = active_bout_length, thresh_lower = int_cuts[4],
             tol = active_bout_tol, tol_lower = vig_bout_tol_lower,
@@ -356,7 +356,7 @@ process_uni <- function(counts, steps = NULL,
     wearflag.ii <- wearflag[start.ii: end.ii]
     if (brevity %in% c(2, 3)) {
       bouted.MVPA.ii <- bouted.MVPA[start.ii: end.ii]
-      bouted.VPA.ii <- bouted.VPA[start.ii: end.ii]
+      bouted.vig.ii <- bouted.vig[start.ii: end.ii]
       bouted.sed10.ii <- bouted.sed10[start.ii: end.ii]
       bouted.sed30.ii <- bouted.sed30[start.ii: end.ii]
       bouted.sed60.ii <- bouted.sed60[start.ii: end.ii]
@@ -423,23 +423,23 @@ process_uni <- function(counts, steps = NULL,
       day.vars[ii, 38] <- movingaves(x = counts.ii, window = 10, max = TRUE)
       day.vars[ii, 39] <- movingaves(x = counts.ii, window = 30, max = TRUE)
       
-      # Minutes of bouted MVPA and bouted VPA
+      # Minutes in MVPA and vigorous bouts
       sum_bouted.MVPA.ii <- sum(bouted.MVPA.ii)
-      sum_bouted.VPA.ii <- sum(bouted.VPA.ii)
+      sum_bouted.vig.ii <- sum(bouted.vig.ii)
       day.vars[ii, 42] <- sum_bouted.MVPA.ii
-      day.vars[ii, 43] <- sum_bouted.VPA.ii
+      day.vars[ii, 43] <- sum_bouted.vig.ii
       
       # Guideline minutes
-      day.vars[ii, 44] <- sum_bouted.MVPA.ii + sum_bouted.VPA.ii
+      day.vars[ii, 44] <- sum_bouted.MVPA.ii + sum_bouted.vig.ii
       
-      # Number of MVPA and VPA bouts
+      # Number of MVPA and vigorous bouts
       if (sum_bouted.MVPA.ii > 0) {
         day.vars[ii, 40] <- sum(rle2(bouted.MVPA.ii)[, 1] == 1)
       } else {
         day.vars[ii, 40] <- 0
       }
-      if (sum_bouted.VPA.ii > 0) {
-        day.vars[ii, 41] <- sum(rle2(bouted.VPA.ii)[, 1] == 1)
+      if (sum_bouted.vig.ii > 0) {
+        day.vars[ii, 41] <- sum(rle2(bouted.vig.ii)[, 1] == 1)
       } else {
         day.vars[ii, 41] <- 0
       }
