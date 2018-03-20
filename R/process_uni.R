@@ -18,9 +18,9 @@
 #' 
 #' \code{valid_days = 4}
 #' 
-#' \code{valid_week_days = 0}
+#' \code{valid_wk_days = 0}
 #' 
-#' \code{valid_weekend_days = 0}
+#' \code{valid_we_days = 0}
 #' 
 #' \code{int_cuts = c(100, 760, 2020, 5999)}
 #' 
@@ -89,11 +89,11 @@
 #' @param valid_days Integer value specifying minimum number of valid days to 
 #' be considered valid for analysis.
 #' 
-#' @param valid_week_days Integer value specifying minimum number of valid 
+#' @param valid_wk_days Integer value specifying minimum number of valid 
 #' weekdays to be considered valid for analysis.
 #' 
-#' @param valid_weekend_days Integer value specifying minimum number of valid 
-#' weekend days to be considered valid for analysis.
+#' @param valid_we_days Integer value specifying minimum number of valid weekend 
+#' days to be considered valid for analysis.
 #' 
 #' @param int_cuts Numeric vector with four cutpoints from which five intensity 
 #' ranges are derived. For example, \code{int_cuts = c(100, 760, 2020, 5999)} 
@@ -223,7 +223,7 @@ process_uni <- function(counts, steps = NULL,
                         brevity = 1, 
                         hourly_var = "cpm", hourly_wearmin = 0, 
                         hourly_normalize = FALSE, 
-                        valid_days = 1, valid_week_days = 0, valid_weekend_days = 0, 
+                        valid_days = 1, valid_wk_days = 0, valid_we_days = 0, 
                         int_cuts = c(100, 760, 2020, 5999), 
                         cpm_nci = FALSE, 
                         days_distinct = FALSE, 
@@ -235,14 +235,14 @@ process_uni <- function(counts, steps = NULL,
                         active_bout_nci = FALSE, sed_bout_tol = 0, 
                         sed_bout_tol_maximum = int_cuts[2] - 1, 
                         artifact_thresh = 25000, artifact_action = 1, 
-                        weekday_weekend = FALSE, return_form = 2) {
+                        weekday_weekend = FALSE, return_form = 1) {
   
   # If requested, set inputs to mimic NCI's SAS programs
   if (nci_methods) {
     
     valid_days <- 4
-    valid_week_days <- 0
-    valid_weekend_days <- 0
+    valid_wk_days <- 0
+    valid_we_days <- 0
     int_cuts <- c(100, 760, 2020, 5999)
     cpm_nci <- TRUE
     days_distinct <- TRUE
@@ -278,9 +278,6 @@ process_uni <- function(counts, steps = NULL,
   
   # Create variable for whether there steps is specified
   have.steps <- ! is.null(steps)
-  
-  # Initialize matrix to save daily physical activity variables
-  day.vars <- matrix(NA, ncol = 68, nrow = n.days)
   
   # If artifact_action = 3, replace minutes with counts >= artifact_thresh with 
   # average of surrounding minutes
@@ -344,11 +341,13 @@ process_uni <- function(counts, steps = NULL,
     days <- ifelse(days > 7, days - 7, days)
   }
   
+  # Initialize matrix to save daily physical activity variables
+  day.vars <- matrix(NA, nrow = n.days, 
+                     ncol = ifelse(brevity == 1, 7, 
+                                   ifelse(brevity == 2, 44, 68)))
+  
   # Loop through each day of data
   for (ii in 1: n.days) { 
-    
-    # Day of week
-    day.ii <- days[ii]
     
     # Load data for iith day
     start.ii <- start.indices[ii]
@@ -362,7 +361,7 @@ process_uni <- function(counts, steps = NULL,
       bouted.sed30.ii <- bouted.sed30[start.ii: end.ii]
       bouted.sed60.ii <- bouted.sed60[start.ii: end.ii]
     }
-    if (! is.null(steps)) {
+    if (have.steps) {
       steps.ii <- steps[start.ii: end.ii]
     }
     
@@ -371,7 +370,7 @@ process_uni <- function(counts, steps = NULL,
     max_counts.ii <- max(counts.ii)
     
     # ID number and day of week
-    day.vars[ii, 1: 2] <- c(id, day.ii)
+    day.vars[ii, 1: 2] <- c(id, days[ii])
     
     # Valid day
     day.vars[ii, 3] <- 
@@ -449,20 +448,17 @@ process_uni <- function(counts, steps = NULL,
         
         # Hourly variable - first analyze all minutes
         if (hourly_var == "counts") {
-          day.vars[ii, 45: 68] <- blocksums(x = counts.ii * wearflag.ii, 
-                                            window = 60)
+          hourly.ii <- blocksums(x = counts.ii * wearflag.ii, window = 60)
         } else if (hourly_var == "cpm") {
-          day.vars[ii, 45: 68] <- blockaves(x = counts.ii * wearflag.ii, 
-                                            window = 60)
+          hourly.ii <- blockaves(x = counts.ii * wearflag.ii, window = 60)
         } else if (hourly_var == "sed_min") {
-          day.vars[ii, 45: 68] <- blocksums(x = counts.ii < int_cuts[1], 
-                                            window = 60)
+          hourly.ii <- blocksums(x = counts.ii < int_cuts[1], window = 60)
         } else if (hourly_var == "sed_bouted_10min") {
-          day.vars[ii, 45: 68] <- blocksums(x = bouted.sed10.ii, window = 60)
+          hourly.ii <- blocksums(x = bouted.sed10.ii, window = 60)
         } else if (hourly_var == "sed_breaks") {
           sedbreaks.ii <- sedbreaks(counts = counts.ii, weartime = wearflag.ii, 
                                     flags = TRUE)
-          day.vars[ii, 45: 68] <- blocksums(x = sedbreaks.ii, window = 60)
+          hourly.ii <- blocksums(x = sedbreaks.ii, window = 60)
         }
         
         # Calculate hourly wear time if necessary
@@ -470,16 +466,17 @@ process_uni <- function(counts, steps = NULL,
           hourly.weartime <- blocksums(x = wearflag.ii, window = 60)
         }
         
-        # Normalize for wear time if requested
+        # Normalize by wear time if requested
         if (hourly_normalize) {
-          day.vars[ii, 45: 68] <- day.vars[ii, 45: 68] / hourly.weartime
+          hourly.ii <- hourly.ii / hourly.weartime
         }
         
         # Replace with NAs where wear time is insufficient
         if (hourly_wearmin > 0) {
-          day.vars[ii, 45: 68] <- day.vars[ii, 45: 68] * 
-            ifelse(hourly.weartime >= hourly_wearmin, 1, NA)
+          hourly.ii <- hourly.ii * ifelse(hourly.weartime >= hourly_wearmin, 1, 
+                                          NA)
         }
+        day.vars[ii, 45: 68] <- hourly.ii
         
       }
     }
@@ -489,13 +486,11 @@ process_uni <- function(counts, steps = NULL,
   # Format day.vars
   if (brevity == 1) {
     
-    day.vars <- day.vars[, 1: 6]
-    colnames(day.vars) <- 
-      c("id", "day", "valid_day", "valid_min", "counts", "cpm")
+    colnames(day.vars) <- c("id", "day", "valid_day", "valid_min", "counts", 
+                            "cpm", "steps")
   
   } else if (brevity == 2) {
     
-    day.vars <- day.vars[, 1: 44]
     colnames(day.vars) <- 
       c("id", "day", "valid_day", "valid_min", "counts", "cpm", "steps", 
         "sed_min", "light_min", "life_min", "mod_min", "vig_min", 
@@ -531,71 +526,51 @@ process_uni <- function(counts, steps = NULL,
     day.vars <- day.vars[, -7, drop = FALSE]
   }
   
-  # Calculate daily averages
-  locs.valid <- which(day.vars[, 3] == 1)
-  locs.valid.wk <- which(day.vars[, 3] == 1 & day.vars[, 2] %in% 2: 6)
-  locs.valid.we <- which(day.vars[, 3] == 1 & day.vars[, 2] %in% c(1, 7))
-  n.valid <- length(locs.valid)
-  n.valid.wk <- length(locs.valid.wk)
-  n.valid.we <- length(locs.valid.we)
-  
-  if (! weekday_weekend) {
+  # Calculate daily averages if requested
+  if (return_form %in% c(1, 3)) {
     
-    # Just calculate averages across all valid days
-    averages <- 
-      c(id = id, valid_days = n.valid, include = 0, 
-        colMeans(x = day.vars[locs.valid, 4: ncol(day.vars), drop = FALSE], 
-                 na.rm = TRUE))
+    locs.valid <- which(day.vars[, 3] == 1)
+    locs.valid.wk <- which(day.vars[, 3] == 1 & day.vars[, 2] %in% 2: 6)
+    locs.valid.we <- which(day.vars[, 3] == 1 & day.vars[, 2] %in% c(1, 7))
+    n.valid <- length(locs.valid)
+    n.valid.wk <- length(locs.valid.wk)
+    n.valid.we <- length(locs.valid.we)
     
-    if (n.valid >= valid_days &&  n.valid.wk >= valid_week_days && 
-        n.valid.we >= valid_weekend_days) {
-      averages[3] <- 1
+    if (! weekday_weekend) {
+      averages <- c(id = id, valid_days = n.valid, valid_wk_days = n.valid.wk, 
+                    valid_we_days = n.valid.we, 
+                    include = ifelse(n.valid >= valid_days && 
+                                       n.valid.wk >= valid_wk_days && 
+                                       n.valid.we >= valid_we_days, 1, 0), 
+                    colMeans(x = day.vars[locs.valid, -c(1: 3), drop = FALSE], na.rm = TRUE))
+    } else {
+      averages <- c(id = id, valid_days = n.valid, valid_wk_days = n.valid.wk, 
+                    valid_we_days = n.valid.we, 
+                    include = ifelse(n.valid >= valid_days && 
+                                       n.valid.wk >= valid_wk_days && 
+                                       n.valid.we >= valid_we_days, 1, 0), 
+                    colMeans(x = day.vars[locs.valid, -c(1: 3), drop = FALSE], na.rm = TRUE), 
+                    colMeans(x = day.vars[locs.valid.wk, -c(1: 3), drop = FALSE], na.rm = TRUE), 
+                    colMeans(x = day.vars[locs.valid.we, -c(1: 3), drop = FALSE], na.rm = TRUE))
+      cols <- colnames(day.vars)[-c(1: 3)]
+      names(averages) <- c(names(averages)[1: 5], cols, 
+                           paste("wk_", cols, sep = ""), 
+                           paste("we_", cols, sep = ""))
     }
     
     # If cpm_nci is TRUE, re-calculate daily average for counts per minute
     if (cpm_nci) {
       averages["cpm"] <- averages["counts"] / averages["valid_min"]
+      if (weekday_weekend) {
+        averages["wk_cpm"] <- averages["wk_counts"] / averages["wk_valid_min"]
+        averages["we_cpm"] <- averages["we_counts"] / averages["we_valid_min"] 
+      }
     }
     
-  } else {
-    
-    # Calculate averages for all valid days and for weekdays/weekends
-    ncol_day.vars <- ncol(day.vars)
-    averages <- 
-      c(id = id, valid_days = n.valid, valid_week_days = n.valid.wk, 
-        valid_weekend_days = n.valid.we, include = 0, 
-        colMeans(x = day.vars[locs.valid, 4: ncol_day.vars, drop = FALSE], na.rm = TRUE),
-        colMeans(x = day.vars[locs.valid.wk, 4: ncol_day.vars, drop = FALSE], na.rm = TRUE),
-        colMeans(x = day.vars[locs.valid.we, 4: ncol_day.vars, drop = FALSE], na.rm = TRUE))
-    
-    if (n.valid >= valid_days && n.valid.wk >= valid_week_days && 
-        n.valid.we >= valid_weekend_days) {
-      averages[5] <- 1
-      
-    }
-    
-    # Modify variable names for weekdays and weekends
-    n.vars <- (length(averages) - 5) / 3
-    
-    indices <- (6 + n.vars): (6 + 2 * n.vars - 1)
-    var.names <- names(averages)[indices]
-    names(averages)[indices] <- paste("wk_", var.names, sep = "")
-    
-    indices2 <- (6 + 2 * n.vars): (6 + 3 * n.vars - 1)
-    names(averages)[indices2] <- paste("we_", var.names, sep = "")
-    
-    # If cpm_nci is TRUE, re-calculate daily average for counts per minute
-    if (cpm_nci) {
-      averages["cpm"] <- averages["counts"] / averages["valid_min"]
-      averages["wk_cpm"] <- averages["wk_counts"] / averages["wk_valid_min"]
-      averages["we_cpm"] <- averages["we_counts"] / averages["we_valid_min"]
-    }
+    # Convert averages to matrix for the hell of it
+    averages <- matrix(averages, nrow = 1, dimnames = list(NULL, names(averages)))
     
   }
-  
-  # Convert averages to matrix for the hell of it
-  averages <- matrix(averages, nrow = 1, dimnames = list(NULL, names(averages)))
-  
   
   # Return data frame(s)
   if (return_form == 1) {

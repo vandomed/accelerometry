@@ -2,8 +2,11 @@
 % Please edit documentation in R/RcppExports.R
 \name{personvars}
 \alias{personvars}
+\alias{personvars}
 \title{Calculating Daily Averages for Physical Activity Variables}
 \usage{
+personvars(dayvars, rows, days, wk, we)
+
 personvars(dayvars, rows, days, wk, we)
 }
 \arguments{
@@ -20,10 +23,28 @@ participant must have to be included.}
 
 \item{we}{Integer value specifying minimum number of valid weekend days a 
 participant must have to be included.}
+
+\item{dayvars}{Numeric matrix with daily physical activity variables.}
+
+\item{rows}{Numeric value specifying number of rows in the matrix to be 
+returned.}
+
+\item{days}{Integer value specifying minimum number of valid days a 
+participant must have to be included.}
+
+\item{wk}{Integer value specifying minimum number of valid weekdays a 
+participant must have to be included.}
+
+\item{we}{Integer value specifying minimum number of valid weekend days a 
+participant must have to be included.}
 }
 \value{
 Numeric matrix.
+
+Numeric matrix.
 }
 \description{
+Not intended for direct use.
+
 Not intended for direct use.
 }

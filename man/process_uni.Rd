@@ -7,14 +7,14 @@
 process_uni(counts, steps = NULL, nci_methods = FALSE, start_day = 1,
   start_date = NULL, id = NULL, brevity = 1, hourly_var = "cpm",
   hourly_wearmin = 0, hourly_normalize = FALSE, valid_days = 1,
-  valid_week_days = 0, valid_weekend_days = 0, int_cuts = c(100, 760,
-  2020, 5999), cpm_nci = FALSE, days_distinct = FALSE,
-  nonwear_window = 60, nonwear_tol = 0, nonwear_tol_upper = 99,
-  nonwear_nci = FALSE, weartime_minimum = 600, weartime_maximum = 1440,
+  valid_wk_days = 0, valid_we_days = 0, int_cuts = c(100, 760, 2020,
+  5999), cpm_nci = FALSE, days_distinct = FALSE, nonwear_window = 60,
+  nonwear_tol = 0, nonwear_tol_upper = 99, nonwear_nci = FALSE,
+  weartime_minimum = 600, weartime_maximum = 1440,
   active_bout_length = 10, active_bout_tol = 0, mvpa_bout_tol_lower = 0,
   vig_bout_tol_lower = 0, active_bout_nci = FALSE, sed_bout_tol = 0,
   sed_bout_tol_maximum = int_cuts[2] - 1, artifact_thresh = 25000,
-  artifact_action = 1, weekday_weekend = FALSE, return_form = 2)
+  artifact_action = 1, weekday_weekend = FALSE, return_form = 1)
 }
 \arguments{
 \item{counts}{Integer vector with accelerometer count values.}
@@ -27,9 +27,9 @@ specifically:
 
 \code{valid_days = 4}
 
-\code{valid_week_days = 0}
+\code{valid_wk_days = 0}
 
-\code{valid_weekend_days = 0}
+\code{valid_we_days = 0}
 
 \code{int_cuts = c(100, 760, 2020, 5999)}
 
@@ -98,11 +98,11 @@ activity by number of wear time minutes.}
 \item{valid_days}{Integer value specifying minimum number of valid days to 
 be considered valid for analysis.}
 
-\item{valid_week_days}{Integer value specifying minimum number of valid 
+\item{valid_wk_days}{Integer value specifying minimum number of valid 
 weekdays to be considered valid for analysis.}
 
-\item{valid_weekend_days}{Integer value specifying minimum number of valid 
-weekend days to be considered valid for analysis.}
+\item{valid_we_days}{Integer value specifying minimum number of valid weekend 
+days to be considered valid for analysis.}
 
 \item{int_cuts}{Numeric vector with four cutpoints from which five intensity 
 ranges are derived. For example, \code{int_cuts = c(100, 760, 2020, 5999)} 
