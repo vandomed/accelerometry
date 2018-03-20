@@ -211,8 +211,8 @@
 #'                           nci_methods = TRUE, brevity = 2, return_form = 3)
 #'                           
 #' # Results are identical
-#' all(accel.nci1[[1]] == accel.nci2[[1]])
-#' all(accel.nci1[[2]] == accel.nci2[[2]])
+#' all.equal(accel.nci1[[1]], accel.nci2[[1]])
+#' all.equal(accel.nci1[[2]], accel.nci2[[2]])
 #' 
 #' 
 #' @export
@@ -521,10 +521,10 @@ process_uni <- function(counts, steps = NULL,
     
   }
   
-  # Drop steps if NULL
-  if (! have.steps) {
-    day.vars <- day.vars[, -7, drop = FALSE]
-  }
+  # # Drop steps if NULL (Removed because it makes process_nhanes code easier)
+  # if (! have.steps) {
+  #   day.vars <- day.vars[, -7, drop = FALSE]
+  # }
   
   # Calculate daily averages if requested
   if (return_form %in% c(1, 3)) {

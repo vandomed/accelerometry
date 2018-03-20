@@ -226,8 +226,8 @@ accel.nci2 <- process_uni(counts = counts.part1, id = id.part1,
                           nci_methods = TRUE, brevity = 2, return_form = 3)
                           
 # Results are identical
-all(accel.nci1[[1]] == accel.nci2[[1]])
-all(accel.nci1[[2]] == accel.nci2[[2]])
+all.equal(accel.nci1[[1]], accel.nci2[[1]])
+all.equal(accel.nci1[[2]], accel.nci2[[2]])
 
 
 }
