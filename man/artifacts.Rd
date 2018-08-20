@@ -12,7 +12,7 @@ artifacts(counts, thresh, counts_classify = NULL)
 \item{thresh}{Integer value specifying the smallest count value that should 
 be considered an artifact.}
 
-\item{counts_class}{Integer vector with accelerometer count values to 
+\item{counts_classify}{Integer vector with accelerometer count values to 
 base artifact classification on, but not to adjust. Mainly included for 
 triaxial data, where you might want to define artifacts based on 
 vertical-axis counts but then actually adjust the triaxial sum or vector 

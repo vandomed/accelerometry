@@ -318,7 +318,6 @@ process_tri <- function(counts,
   counts.ml <- counts[, 3]
   counts.sum <- counts.vert + counts.ap + counts.ml
   counts.vm <- sqrt(counts.vert^2 + counts.ap^2 + counts.ml^2)
-  counts <- cbind(counts, counts.sum, counts.vm)
   
   # Determine which counts vector to use for artifact detection
   if (artifact_axis == "vert") {
@@ -382,12 +381,11 @@ process_tri <- function(counts,
   if (artifact_action == 2 && max_artifact >= artifact_thresh) {
     artifact.locs <- which(counts.artifacts >= artifact_thresh)
     wearflag[artifact.locs] <- 0
-    counts[artifact.locs, ] <- 0
-    counts.vert <- counts[, 1]
-    counts.ap <- counts[, 2]
-    counts.ml <- counts[, 3]
-    counts.sum <- counts[, 4]
-    counts.vm <- counts[, 5]
+    counts.vert[artifact.locs, ] <- 0
+    counts.ap[artifact.locs, ] <- 0
+    counts.ml[artifact.locs, ] <- 0
+    counts.sum[artifact.locs, ] <- 0
+    counts.vm[artifact.locs, ] <- 0
   }
   
   # Determine which counts vector to use for intensities and activity bouts
@@ -479,6 +477,9 @@ process_tri <- function(counts,
     day.vars <- matrix(NA, nrow = n.days, ncol = 124)
   }
   
+  # Re-assemble counts matrix as vert, AP, ML, sum, vm
+  counts <- cbind(counts.vert, counts.ap, counts.ml, counts.sum, counts.vm)
+  
   # Loop through each day of data
   for (ii in 1: n.days) { 
     
@@ -547,28 +548,28 @@ process_tri <- function(counts,
       
       # Counts accumulated from each intensity
       sedlocs.ii <- which(wcounts.int.ii < int_cuts[1])
-      day.vars[ii, 32: 36] <- apply(wcounts.ii[sedlocs.ii, ], 2, sum)
+      day.vars[ii, 32: 36] <- apply(wcounts.ii[sedlocs.ii, , drop = FALSE], 2, sum)
       
       lightlocs.ii <- which(wcounts.int.ii >= int_cuts[1] & wcounts.int.ii < int_cuts[2])
-      day.vars[ii, 37: 41] <- apply(wcounts.ii[lightlocs.ii, ], 2, sum)
+      day.vars[ii, 37: 41] <- apply(wcounts.ii[lightlocs.ii, , drop = FALSE], 2, sum)
       
       lifelocs.ii <- which(wcounts.int.ii >= int_cuts[2] & wcounts.int.ii < int_cuts[3])
-      day.vars[ii, 42: 46] <- apply(wcounts.ii[lifelocs.ii, ], 2, sum)
+      day.vars[ii, 42: 46] <- apply(wcounts.ii[lifelocs.ii, , drop = FALSE], 2, sum)
       
       modlocs.ii <- which(wcounts.int.ii >= int_cuts[3] & wcounts.int.ii < int_cuts[4])
-      day.vars[ii, 47: 51] <- apply(wcounts.ii[modlocs.ii, ], 2, sum)
+      day.vars[ii, 47: 51] <- apply(wcounts.ii[modlocs.ii, , drop = FALSE], 2, sum)
       
       viglocs.ii <- which(wcounts.int.ii >= int_cuts[4])
-      day.vars[ii, 52: 56] <- apply(wcounts.ii[viglocs.ii, ], 2, sum)
+      day.vars[ii, 52: 56] <- apply(wcounts.ii[viglocs.ii, , drop = FALSE], 2, sum)
       
       lightlifelocs.ii <- c(lightlocs.ii, lifelocs.ii)
-      day.vars[ii, 57: 61] <- apply(wcounts.ii[lightlifelocs.ii, ], 2, sum)
+      day.vars[ii, 57: 61] <- apply(wcounts.ii[lightlifelocs.ii, , drop = FALSE], 2, sum)
       
       mvpalocs.ii <- c(modlocs.ii, viglocs.ii)
-      day.vars[ii, 62: 66] <- apply(wcounts.ii[mvpalocs.ii, ], 2, sum)
+      day.vars[ii, 62: 66] <- apply(wcounts.ii[mvpalocs.ii, , drop = FALSE], 2, sum)
       
       activelocs.ii <- c(lightlifelocs.ii, mvpalocs.ii)
-      day.vars[ii, 67: 71] <- apply(wcounts.ii[activelocs.ii, ], 2, sum)
+      day.vars[ii, 67: 71] <- apply(wcounts.ii[activelocs.ii, , drop = FALSE], 2, sum)
       
       # Bouted sedentary time
       day.vars[ii, 72: 74] <- c(sum(bouted.sed10.ii), 
@@ -715,7 +716,7 @@ process_tri <- function(counts,
   # }
   
   # Calculate daily averages if requested
-  if (return_form %in% c("averags", "both")) {
+  if (return_form %in% c("averages", "both")) {
     
     locs.valid <- which(day.vars[, 3] == 1)
     locs.valid.wk <- which(day.vars[, 3] == 1 & day.vars[, 2] %in% 2: 6)
@@ -746,12 +747,26 @@ process_tri <- function(counts,
                            paste("we_", cols, sep = ""))
     }
     
-    # If cpm_nci is TRUE, re-calculate daily average for counts per minute
+    # If cpm_nci is TRUE, re-calculate daily averages for counts per minute
     if (cpm_nci) {
-      averages["cpm"] <- averages["counts"] / averages["valid_min"]
+      averages["cpm_vert"] <- averages["counts_vert"] / averages["valid_min"]
+      averages["cpm_ap"] <- averages["counts_ap"] / averages["valid_min"]
+      averages["cpm_ml"] <- averages["counts_ml"] / averages["valid_min"]
+      averages["cpm_sum"] <- averages["counts_sum"] / averages["valid_min"]
+      averages["cpm_vm"] <- averages["counts_vm"] / averages["valid_min"]
+      
       if (weekday_weekend) {
-        averages["wk_cpm"] <- averages["wk_counts"] / averages["wk_valid_min"]
-        averages["we_cpm"] <- averages["we_counts"] / averages["we_valid_min"] 
+        averages["wk_cpm_vert"] <- averages["wk_counts_vert"] / averages["wk_valid_min"]
+        averages["wk_cpm_ap"] <- averages["wk_counts_ap"] / averages["wk_valid_min"]
+        averages["wk_cpm_ml"] <- averages["wk_counts_ml"] / averages["wk_valid_min"]
+        averages["wk_cpm_sum"] <- averages["wk_counts_sum"] / averages["wk_valid_min"]
+        averages["wk_cpm_vm"] <- averages["wk_counts_vm"] / averages["wk_valid_min"]
+        
+        averages["we_cpm_vert"] <- averages["we_counts_vert"] / averages["we_valid_min"]
+        averages["we_cpm_ap"] <- averages["we_counts_ap"] / averages["we_valid_min"] 
+        averages["we_cpm_ml"] <- averages["we_counts_ml"] / averages["we_valid_min"] 
+        averages["we_cpm_sum"] <- averages["we_counts_sum"] / averages["we_valid_min"] 
+        averages["we_cpm_vm"] <- averages["we_counts_vm"] / averages["we_valid_min"] 
       }
     }
     
