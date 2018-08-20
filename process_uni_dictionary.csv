@@ -10,11 +10,11 @@ valid_min,1+,Number of minutes classified as valid wear time.
 counts,1+,Total counts accumulated during wear time minutes.
 cpm,1+,counts/valid_min.
 steps,2+,Total steps accumulated during weartime minutes.
-sed_min,2+,"Sedentary minutes, or minutes with counts  int_cuts[1]. "
-light_min,2+,"Light intensity minutes, or minutes with int.cuts[1] = counts  int.cuts[2]."
-life_min,2+,"Lifestyle intensity minutes, or minutes with int.cuts[2] = counts  int.cuts[3]."
-mod_min,2+,"Moderate intensity minutes, or minutes with int.cuts[3] = counts  int.cuts[4]."
-vig_min,2+,"Vigorous intensity minutes, or minutes with counts = int.cuts[4]."
+sed_min,2+,"Sedentary minutes, or minutes with counts < int_cuts[1]. "
+light_min,2+,"Light intensity minutes, or minutes with int.cuts[1] <= counts <  int.cuts[2]."
+life_min,2+,"Lifestyle intensity minutes, or minutes with int.cuts[2] <= counts < int.cuts[3]."
+mod_min,2+,"Moderate intensity minutes, or minutes with int.cuts[3] <= counts < int.cuts[4]."
+vig_min,2+,"Vigorous intensity minutes, or minutes with counts >= int.cuts[4]."
 lightlife_min,2+,Light-to-lifestyle intensity minutes.
 mvpa_min,2+,Moderate-to-vigorous intensity minutes.
 active_min,2+,Active (i.e. non-sedentary) minutes.
@@ -26,7 +26,7 @@ vig_percent,2+,vig_min/valid_min.
 lightlife_percent,2+,lightlife_min/valid_min.
 mvpa_percent,2+,mvpa_min/valid_min.
 active_percent,2+,active_min/valid_min.
-sed_counts,2+,Counts accumualted during sedentary time.
+sed_counts,2+,Counts accumulated during sedentary time.
 light_counts,2+,Counts accumulated during light intensity activity.
 life_counts,2+,Counts accumulated during lifestyle intensity activity.
 mod_counts,2+,Counts accumulated during moderate intensity activity.
