@@ -60,7 +60,7 @@ IntegerVector intensities(IntegerVector counts,
       out[0] += 1;
       out[8] += counts_a;
     }
-    else if (counts_a >= int_cuts_1 && counts_a < int_cuts_1) {
+    else if (counts_a >= int_cuts_1 && counts_a < int_cuts_2) {
       out[1] += 1;
       out[5] += 1;
       out[7] += 1;

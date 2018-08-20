@@ -50,7 +50,13 @@ using namespace Rcpp;
 //' time.
 //' 
 //' 
-//' @inherit artifacts references
+//' @references 
+//' National Cancer Institute. Risk factor monitoring and methods: SAS programs 
+//' for analyzing NHANES 2003-2004 accelerometer data. Available at: 
+//' \url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed Aug. 19, 2018.
+//' 
+//' Acknowledgment: This material is based upon work supported by the National 
+//' Science Foundation Graduate Research Fellowship under Grant No. DGE-0940903.
 //' 
 //' 
 //' @examples

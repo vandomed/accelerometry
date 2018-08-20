@@ -10,7 +10,8 @@ NULL
 #'
 #' Triaxial Sample Data
 #' 
-#' Toy dataset with triaxial minute-to-minute counts.
+#' Toy dataset with triaxial minute-to-minute counts generated from a trivariate 
+#' normal distribution. Does not closely resemble real accelerometer data.
 #' 
 #' @name tridata
 #' @docType data

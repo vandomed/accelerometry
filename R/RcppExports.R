@@ -10,21 +10,24 @@
 #' (\url{http://riskfactor.cancer.gov/tools/nhanes_pam}). 
 #' 
 #' 
-#' @inheritParams weartime
+#' @param counts Integer vector with accelerometer count values.
 #' @param thresh Integer value specifying the smallest count value that should 
 #' be considered an artifact.
+#' @param counts_class Integer vector with accelerometer count values to 
+#' base artifact classification on, but not to adjust. Mainly included for 
+#' triaxial data, where you might want to define artifacts based on 
+#' vertical-axis counts but then actually adjust the triaxial sum or vector 
+#' magnitude counts.
 #'
 #'
-#' @return Integer vector with artifacts corrected.
+#' @return Integer vector equivalent to \code{counts} except where artifacts 
+#' were adjusted.
 #' 
 #' 
 #' @references 
 #' National Cancer Institute. Risk factor monitoring and methods: SAS programs 
 #' for analyzing NHANES 2003-2004 accelerometer data. Available at: 
-#' \url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed March 9, 2018.
-#' 
-#' Acknowledgment: This material is based upon work supported by the National 
-#' Science Foundation Graduate Research Fellowship under Grant No. DGE-0940903.
+#' \url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed Aug. 19, 2018.
 #'
 #'
 #' @examples
@@ -38,8 +41,8 @@
 #' counts.part3.corrected <- artifacts(counts = counts.part3, thresh = 10000)
 #'
 #'@export
-artifacts <- function(counts, thresh) {
-    .Call(`_accelerometry_artifacts`, counts, thresh)
+artifacts <- function(counts, thresh, counts_classify = NULL) {
+    .Call(`_accelerometry_artifacts`, counts, thresh, counts_classify)
 }
 
 blockaves_i <- function(x, window) {
@@ -145,7 +148,13 @@ blocksums_n_max <- function(x, window) {
 #' bout and 0's for minutes that are not.
 #' 
 #' 
-#' @inherit artifacts references
+#' @references 
+#' National Cancer Institute. Risk factor monitoring and methods: SAS programs 
+#' for analyzing NHANES 2003-2004 accelerometer data. Available at: 
+#' \url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed Aug. 19, 2018.
+#' 
+#' Acknowledgment: This material is based upon work supported by the National 
+#' Science Foundation Graduate Research Fellowship under Grant No. DGE-0940903.
 #' 
 #' 
 #' @examples
@@ -164,7 +173,7 @@ blocksums_n_max <- function(x, window) {
 #' 
 #' 
 #' @export
-bouts <- function(counts, weartime = NULL, bout_length = 10L, thresh_lower = 0L, thresh_upper = 100000L, tol = 0L, tol_lower = 0L, tol_upper = 100000L, nci = TRUE, days_distinct = FALSE) {
+bouts <- function(counts, weartime = NULL, bout_length = 10L, thresh_lower = 0L, thresh_upper = 100000L, tol = 0L, tol_lower = 0L, tol_upper = 100000L, nci = FALSE, days_distinct = FALSE) {
     .Call(`_accelerometry_bouts`, counts, weartime, bout_length, thresh_lower, thresh_upper, tol, tol_lower, tol_upper, nci, days_distinct)
 }
 
@@ -354,7 +363,13 @@ sedbreaks_flags <- function(counts, weartime, thresh) {
 #' time.
 #' 
 #' 
-#' @inherit artifacts references
+#' @references 
+#' National Cancer Institute. Risk factor monitoring and methods: SAS programs 
+#' for analyzing NHANES 2003-2004 accelerometer data. Available at: 
+#' \url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed Aug. 19, 2018.
+#' 
+#' Acknowledgment: This material is based upon work supported by the National 
+#' Science Foundation Graduate Research Fellowship under Grant No. DGE-0940903.
 #' 
 #' 
 #' @examples

@@ -70,7 +70,7 @@ weartime.flag <- weartime(counts = counts.part1)
 \references{
 National Cancer Institute. Risk factor monitoring and methods: SAS programs 
 for analyzing NHANES 2003-2004 accelerometer data. Available at: 
-\url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed March 9, 2018.
+\url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed Aug. 19, 2018.
 
 Acknowledgment: This material is based upon work supported by the National 
 Science Foundation Graduate Research Fellowship under Grant No. DGE-0940903.

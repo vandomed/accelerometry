@@ -6,14 +6,15 @@
 using namespace Rcpp;
 
 // artifacts
-IntegerVector artifacts(IntegerVector counts, int thresh);
-RcppExport SEXP _accelerometry_artifacts(SEXP countsSEXP, SEXP threshSEXP) {
+IntegerVector artifacts(IntegerVector counts, int thresh, Rcpp::Nullable<Rcpp::IntegerVector> counts_classify);
+RcppExport SEXP _accelerometry_artifacts(SEXP countsSEXP, SEXP threshSEXP, SEXP counts_classifySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< IntegerVector >::type counts(countsSEXP);
     Rcpp::traits::input_parameter< int >::type thresh(threshSEXP);
-    rcpp_result_gen = Rcpp::wrap(artifacts(counts, thresh));
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type counts_classify(counts_classifySEXP);
+    rcpp_result_gen = Rcpp::wrap(artifacts(counts, thresh, counts_classify));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -289,7 +290,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_accelerometry_artifacts", (DL_FUNC) &_accelerometry_artifacts, 2},
+    {"_accelerometry_artifacts", (DL_FUNC) &_accelerometry_artifacts, 3},
     {"_accelerometry_blockaves_i", (DL_FUNC) &_accelerometry_blockaves_i, 2},
     {"_accelerometry_blockaves_i_max", (DL_FUNC) &_accelerometry_blockaves_i_max, 2},
     {"_accelerometry_blockaves_n", (DL_FUNC) &_accelerometry_blockaves_n, 2},

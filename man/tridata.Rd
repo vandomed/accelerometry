@@ -5,5 +5,6 @@
 \alias{tridata}
 \title{Triaxial Sample Data}
 \description{
-Toy dataset with triaxial minute-to-minute counts.
+Toy dataset with triaxial minute-to-minute counts generated from a trivariate 
+normal distribution. Does not closely resemble real accelerometer data.
 }

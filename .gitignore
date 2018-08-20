@@ -6,4 +6,5 @@
 src/*.o
 src/*.so
 src/*.dll
-process_uni_dictionary.csv
+Thumbs.db
+misc

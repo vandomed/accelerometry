@@ -4,16 +4,23 @@
 \alias{artifacts}
 \title{Accelerometer Artifact Correction}
 \usage{
-artifacts(counts, thresh)
+artifacts(counts, thresh, counts_classify = NULL)
 }
 \arguments{
 \item{counts}{Integer vector with accelerometer count values.}
 
 \item{thresh}{Integer value specifying the smallest count value that should 
 be considered an artifact.}
+
+\item{counts_class}{Integer vector with accelerometer count values to 
+base artifact classification on, but not to adjust. Mainly included for 
+triaxial data, where you might want to define artifacts based on 
+vertical-axis counts but then actually adjust the triaxial sum or vector 
+magnitude counts.}
 }
 \value{
-Integer vector with artifacts corrected.
+Integer vector equivalent to \code{counts} except where artifacts 
+were adjusted.
 }
 \description{
 Corrects abnormally high count values in accelerometer data by replacing 
@@ -36,8 +43,5 @@ counts.part3.corrected <- artifacts(counts = counts.part3, thresh = 10000)
 \references{
 National Cancer Institute. Risk factor monitoring and methods: SAS programs 
 for analyzing NHANES 2003-2004 accelerometer data. Available at: 
-\url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed March 9, 2018.
-
-Acknowledgment: This material is based upon work supported by the National 
-Science Foundation Graduate Research Fellowship under Grant No. DGE-0940903.
+\url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed Aug. 19, 2018.
 }

@@ -11,7 +11,7 @@
 #' Package: \tab accelerometry \cr
 #' Type: \tab Package \cr
 #' Version: \tab 3.1.1 \cr
-#' Date: \tab 2018-03-20 \cr
+#' Date: \tab 2018-08-19 \cr
 #' License: \tab GPL-3 \cr
 #' }
 #'
@@ -26,8 +26,7 @@
 #' Statistics (NCHS). National Health and Nutrition Examination Survey Data. 
 #' Hyattsville, MD: US Department of Health and Human Services, Centers for 
 #' Disease Control and Prevention, 2003-6. Available at: 
-#' \url{http://www.cdc.gov/nchs/nhanes/nhanes_questionnaires.htm}. Accessed 
-#' March 9, 2018.
+#' \url{https://wwwn.cdc.gov/nchs/nhanes/Default.aspx}. Accessed Aug. 19, 2018.
 #' 
 #' Eddelbuettel, D. and Francois, R. (2011) Rcpp: Seamless R and C++ 
 #' Integration. Journal of Statistical Software, 40(8), 1-18. 
@@ -42,11 +41,11 @@
 #' 
 #' National Cancer Institute. Risk factor monitoring and methods: SAS programs 
 #' for analyzing NHANES 2003-2004 accelerometer data. Available at: 
-#' \url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed March 9, 2018.
+#' \url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed Aug. 19, 2018.
 #' 
-#' Van Domelen, D.R., Pittard, W.S. and Harris, T.B. (2014) 
+#' Van Domelen, D.R., Pittard, W.S. and Harris, T.B. (2018) 
 #' nhanesaccel: Process accelerometer data from NHANES 2003-2006. R package 
-#' version 2.1.1. \url{http://R-Forge.R-project.org/projects/nhanesaccel}. 
+#' version 3.1.1. \url{https://github.com/vandomed/accelerometry}. 
 #' 
 #' Acknowledgment: This material is based upon work supported by the National 
 #' Science Foundation Graduate Research Fellowship under Grant No. DGE-0940903.

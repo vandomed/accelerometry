@@ -72,7 +72,13 @@ using namespace Rcpp;
 //' bout and 0's for minutes that are not.
 //' 
 //' 
-//' @inherit artifacts references
+//' @references 
+//' National Cancer Institute. Risk factor monitoring and methods: SAS programs 
+//' for analyzing NHANES 2003-2004 accelerometer data. Available at: 
+//' \url{http://riskfactor.cancer.gov/tools/nhanes_pam}. Accessed Aug. 19, 2018.
+//' 
+//' Acknowledgment: This material is based upon work supported by the National 
+//' Science Foundation Graduate Research Fellowship under Grant No. DGE-0940903.
 //' 
 //' 
 //' @examples
@@ -94,9 +100,13 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 IntegerVector bouts(IntegerVector counts, 
                     Rcpp::Nullable<Rcpp::IntegerVector> weartime = R_NilValue, 
-                    int bout_length = 10, int thresh_lower = 0, 
-                    int thresh_upper = 100000, int tol = 0, int tol_lower = 0, 
-                    int tol_upper = 100000, bool nci = true, 
+                    int bout_length = 10, 
+                    int thresh_lower = 0, 
+                    int thresh_upper = 100000, 
+                    int tol = 0, 
+                    int tol_lower = 0, 
+                    int tol_upper = 100000, 
+                    bool nci = false, 
                     bool days_distinct = false) {
   
   // Get length(counts) and initialize output vector
@@ -105,7 +115,7 @@ IntegerVector bouts(IntegerVector counts,
   
   // If weartime unspecified, make it a vector of 1's
   IntegerVector wear(n, 1);
-  if (weartime.isNotNull()) IntegerVector wear(weartime);
+  if (weartime.isNotNull()) wear = weartime;
   
   // Use appropriate version of algorithm given days_distinct, tol, and nci
   if (! days_distinct) {
@@ -190,7 +200,7 @@ IntegerVector bouts(IntegerVector counts,
       }
     }
   }
-  else if (days_distinct == 1) {
+  else if (days_distinct) {
     
     if (tol == 0) {
       
