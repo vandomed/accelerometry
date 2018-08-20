@@ -103,158 +103,27 @@ num_vig_bouts,2+,Number of vigorous bouts per day.
 mvpa_bouted,2+,MVPA minutes accumulated in bouts of length >= active.bout.length (by default 10-min bouts).
 vig_bouted,2+,Vigorous intensity minutes accumulated in bouts of length >= active.bout.length (by default 10-min bouts).
 guideline_min,2+,Minutes towards physical activity guidelines (150 min/wk of MVPA or 75 min/wk of vigorous physical activity).
-hourly_var_hour1,3,Average counts per minute during hour 1 (midnight to 1 AM).
-hourly_var_hour2,3,Average counts per minute during hour 2.
-hourly_var_hour3,3,Average counts per minute during hour 3.
-hourly_var_hour4,3,Average counts per minute during hour 4.
-hourly_var_hour5,3,Average counts per minute during hour 5.
-hourly_var_hour6,3,Average counts per minute during hour 6.
-hourly_var_hour7,3,Average counts per minute during hour 7.
-hourly_var_hour8,3,Average counts per minute during hour 8.
-hourly_var_hour9,3,Average counts per minute during hour 9.
-hourly_var_hour10,3,Average counts per minute during hour 10.
-hourly_var_hour11,3,Average counts per minute during hour 11.
-hourly_var_hour12,3,Average counts per minute during hour 12.
-hourly_var_hour13,3,Average counts per minute during hour 13.
-hourly_var_hour14,3,Average counts per minute during hour 14.
-hourly_var_hour15,3,Average counts per minute during hour 15.
-hourly_var_hour16,3,Average counts per minute during hour 16.
-hourly_var_hour17,3,Average counts per minute during hour 17.
-hourly_var_hour18,3,Average counts per minute during hour 18.
-hourly_var_hour19,3,Average counts per minute during hour 19.
-hourly_var_hour20,3,Average counts per minute during hour 20.
-hourly_var_hour21,3,Average counts per minute during hour 21.
-hourly_var_hour22,3,Average counts per minute during hour 22.
-hourly_var_hour23,3,Average counts per minute during hour 23.
-hourly_var_hour24,3,Average counts per minute during hour 24 (11 PM to midnight).
-=======,,
-Variable,brevity,Description
-id,1+,Participant ID number.
-day,1+,"Day of week (1 = Sunday, …, 7 = Saturday)."
-valid_day,1+,"1 if day is considered valid for analysis, otherwise 0."
-valid_days,1+,Number of valid days. Only included in per-person summary.
-valid_week_days,1+,Number of valid weekdays. Only included in per-person summary.
-valid_weekend_days,1+,Number of valid weekend days. Only included in per-person summary.
-include,1+,"1 if participant is deemed to have valid data for analysis, otherwise 0."
-valid_min,1+,Number of minutes classified as valid wear time.
-counts_vert,1+,Total counts during wear time minutes (vertical axis). 
-counts_ap,1+,Total counts during wear time minutes (anteroposterior axis). 
-counts_ml,1+,Total counts during wear time minutes (mediolateral axis). 
-counts_sum,1+,Total counts during wear time minutes (triaxial sum). 
-counts_vm,1+,Total counts during wear time minutes (triaxial vector magnitude). 
-cpm_vert,1+,counts_vert/valid_min.
-cpm_ap,1+,counts_ap/valid_min.
-cpm_ml,1+,counts_ml/valid_min.
-cpm_sum,1+,counts_sum/valid_min.
-cpm_vm,1+,counts_vm/valid_min
-steps,2+,Total steps accumulated during weartime minutes.
-sed_min,2+,"Sedentary minutes, or minutes with counts < int_cuts[1]. "
-light_min,2+,"Light intensity minutes, or minutes with int.cuts[1] <= counts <  int.cuts[2]."
-life_min,2+,"Lifestyle intensity minutes, or minutes with int.cuts[2] <= counts < int.cuts[3]."
-mod_min,2+,"Moderate intensity minutes, or minutes with int.cuts[3] <= counts < int.cuts[4]."
-vig_min,2+,"Vigorous intensity minutes, or minutes with counts >= int.cuts[4]."
-lightlife_min,2+,Light-to-lifestyle intensity minutes.
-mvpa_min,2+,Moderate-to-vigorous intensity minutes.
-active_min,2+,Active (i.e. non-sedentary) minutes.
-sed_percent,2+,sed_min/valid_min.
-light_percent,2+,light_min/valid_min.
-life_percent,2+,life_min/valid_min.
-mod_percent,2+,mod_min/valid_min.
-vig_percent,2+,vig_min/valid_min.
-lightlife_percent,2+,lightlife_min/valid_min.
-mvpa_percent,2+,mvpa_min/valid_min.
-active_percent,2+,active_min/valid_min.
-sed_counts_vert,2+,Counts accumulated during sedentary time (vertical axis).
-sed_counts_ap,2+,Counts accumulated during sedentary time (anteroposterior axis).
-sed_counts_ml,2+,Counts accumulated during sedentary time (mediolateral axis).
-sed_counts_sum,2+,Counts accumulated during sedentary time (triaxial sum).
-sed_counts_vm,2+,Counts accumulated during sedentary time (triaxial vector magnitude).
-light_counts_vert,2+,Counts accumulated during light activity (vertical axis).
-light_counts_ap,2+,Counts accumulated during light activity (anteroposterior axis).
-light_counts_ml,2+,Counts accumulated during light activity (mediolateral axis).
-light_counts_sum,2+,Counts accumulated during light activity (triaxial sum).
-light_counts_vm,2+,Counts accumulated during light activity (triaxial vector magnitude).
-life_counts_vert,2+,Counts accumulated during lifestyle activity (vertical axis).
-life_counts_ap,2+,Counts accumulated during lifestyle activity (anteroposterior axis).
-life_counts_ml,2+,Counts accumulated during lifestyle activity (mediolateral axis).
-life_counts_sum,2+,Counts accumulated during lifestyle activity (triaxial sum).
-life_counts_vm,2+,Counts accumulated during lifestyle activity (triaxial vector magnitude).
-mod_counts_vert,2+,Counts accumulated during moderate activity (vertical axis).
-mod_counts_ap,2+,Counts accumulated during moderate activity (anteroposterior axis).
-mod_counts_ml,2+,Counts accumulated during moderate activity (mediolateral axis).
-mod_counts_sum,2+,Counts accumulated during moderate activity (triaxial sum).
-mod_counts_vm,2+,Counts accumulated during moderate activity (triaxial vector magnitude).
-vig_counts_vert,2+,Counts accumulated during vigorous activity (vertical axis).
-vig_counts_ap,2+,Counts accumulated during vigorous activity (anteroposterior axis).
-vig_counts_ml,2+,Counts accumulated during vigorous activity (mediolateral axis).
-vig_counts_sum,2+,Counts accumulated during vigorous activity (triaxial sum).
-vig_counts_vm,2+,Counts accumulated during vigorous activity (triaxial vector magnitude).
-lightlife_counts_vert,2+,Counts accumulated during light-to-lifestyle activity (vertical axis).
-lightlife_counts_ap,2+,Counts accumulated during light-to-lifestyle activity (anteroposterior axis).
-lightlife_counts_ml,2+,Counts accumulated during light-to-lifestyle activity (mediolateral axis).
-lightlife_counts_sum,2+,Counts accumulated during light-to-lifestyle activity (triaxial sum).
-lightlife_counts_vm,2+,Counts accumulated during light-to-lifestyle activity (triaxial vector magnitude).
-mvpa_counts_vert,2+,Counts accumulated during MVPA (vertical axis).
-mvpa_counts_ap,2+,Counts accumulated during MVPA (anteroposterior axis).
-mvpa_counts_ml,2+,Counts accumulated during MVPA (mediolateral axis).
-mvpa_counts_sum,2+,Counts accumulated during MVPA activity (triaxial sum).
-mvpa_counts_vm,2+,Counts accumulated during MVPA activity (triaxial vector magnitude).
-active_counts_vert,2+,Counts accumulated during active (i.e. non-sedentary) time (vertical axis). 
-active_counts_ap,2+,Counts accumulated during active (i.e. non-sedentary) time (anteroposterior axis).
-active_counts_ml,2+,Counts accumulated during active (i.e. non-sedentary) time (mediolateral axis).
-active_counts_sum,2+,Counts accumulated during active (i.e. non-sedentary) time (triaxial sum).
-active_counts_vm,2+,Counts accumulated during active (i.e. non-sedentary) time (triaxial vector magnitude).
-sed_bouted_10min,2+,Sedentary minutes accumulated in bouts of length >= 10 min.
-sed_bouted_30min,2+,Sedentary minutes accumulated in bouts of length >= 30 min.
-sed_bouted_60min,2+,Sedentary minutes accumulated in bouts of length >= 60 min.
-sed_breaks,2+,Number of times that participant transitions from sedentary minute to non-sedentary minute.
-max_1min_counts_vert,2+,Maximum count value (vertical axis).
-max_1min_counts_ap,2+,Maximum count value (anteroposterior axis).
-max_1min_counts_ml,2+,Maximum count value (mediolateral axis).
-max_1min_counts_sum,2+,Maximum count value (triaxial sum).
-max_1min_counts_vm,2+,Maximum count value (triaxial vector magnitude).
-max_5min_counts_vert,2+,Maximum average count value over a 5-min interval (vertical axis).
-max_5min_counts_ap,2+,Maximum average count value over a 5-min interval (anteroposterior axis).
-max_5min_counts_ml,2+,Maximum average count value over a 5-min interval (mediolateral axis).
-max_5min_counts_sum,2+,Maximum average count value over a 5-min interval (triaxial sum).
-max_5min_counts_vm,2+,Maximum average count value over a 5-min interval (triaxial vector magnitude).
-max_10min_counts_vert,2+,Maximum average count value over a 10-min interval (vertical axis).
-max_10min_counts_ap,2+,Maximum average count value over a 10-min interval (anteroposterior axis).
-max_10min_counts_ml,2+,Maximum average count value over a 10-min interval (mediolateral axis).
-max_10min_counts_sum,2+,Maximum average count value over a 10-min interval (triaxial sum).
-max_10min_counts_vm,2+,Maximum average count value over a 10-min interval (triaxial vector magnitude).
-max_30min_counts_vert,2+,Maximum average count value over a 30-min interval (vertical axis).
-max_30min_counts_ap,2+,Maximum average count value over a 30-min interval (anteroposterior axis).
-max_30min_counts_ml,2+,Maximum average count value over a 30-min interval (mediolateral axis).
-max_30min_counts_sum,2+,Maximum average count value over a 30-min interval (triaxial sum).
-max_30min_counts_vm,2+,Maximum average count value over a 30-min interval (triaxial vector magnitude).
-num_mvpa_bouts,2+,Number of MVPA bouts per day. 
-num_vig_bouts,2+,Number of vigorous bouts per day. 
-mvpa_bouted,2+,MVPA minutes accumulated in bouts of length >= active.bout.length (by default 10-min bouts).
-vig_bouted,2+,Vigorous intensity minutes accumulated in bouts of length >= active.bout.length (by default 10-min bouts).
-guideline_min,2+,Minutes towards physical activity guidelines (150 min/wk of MVPA or 75 min/wk of vigorous physical activity).
-hourly_var_hour1,3,Average counts per minute during hour 1 (midnight to 1 AM).
-hourly_var_hour2,3,Average counts per minute during hour 2.
-hourly_var_hour3,3,Average counts per minute during hour 3.
-hourly_var_hour4,3,Average counts per minute during hour 4.
-hourly_var_hour5,3,Average counts per minute during hour 5.
-hourly_var_hour6,3,Average counts per minute during hour 6.
-hourly_var_hour7,3,Average counts per minute during hour 7.
-hourly_var_hour8,3,Average counts per minute during hour 8.
-hourly_var_hour9,3,Average counts per minute during hour 9.
-hourly_var_hour10,3,Average counts per minute during hour 10.
-hourly_var_hour11,3,Average counts per minute during hour 11.
-hourly_var_hour12,3,Average counts per minute during hour 12.
-hourly_var_hour13,3,Average counts per minute during hour 13.
-hourly_var_hour14,3,Average counts per minute during hour 14.
-hourly_var_hour15,3,Average counts per minute during hour 15.
-hourly_var_hour16,3,Average counts per minute during hour 16.
-hourly_var_hour17,3,Average counts per minute during hour 17.
-hourly_var_hour18,3,Average counts per minute during hour 18.
-hourly_var_hour19,3,Average counts per minute during hour 19.
-hourly_var_hour20,3,Average counts per minute during hour 20.
-hourly_var_hour21,3,Average counts per minute during hour 21.
-hourly_var_hour22,3,Average counts per minute during hour 22.
-hourly_var_hour23,3,Average counts per minute during hour 23.
-hourly_var_hour24,3,Average counts per minute during hour 24 (11 PM to midnight).
->>>>>>> bfdb7e6398cb1a161d57ecc759ff71b66645f020,,
+hourly_var_hour1,3,Value of hourly_var variable during hour 1 (midnight to 1 AM).
+hourly_var_hour2,3,Value of hourly_var variable during hour 2.
+hourly_var_hour3,3,Value of hourly_var variable during hour 3.
+hourly_var_hour4,3,Value of hourly_var variable during hour 4.
+hourly_var_hour5,3,Value of hourly_var variable during hour 5.
+hourly_var_hour6,3,Value of hourly_var variable during hour 6.
+hourly_var_hour7,3,Value of hourly_var variable during hour 7.
+hourly_var_hour8,3,Value of hourly_var variable during hour 8.
+hourly_var_hour9,3,Value of hourly_var variable during hour 9.
+hourly_var_hour10,3,Value of hourly_var variable during hour 10.
+hourly_var_hour11,3,Value of hourly_var variable during hour 11.
+hourly_var_hour12,3,Value of hourly_var variable during hour 12.
+hourly_var_hour13,3,Value of hourly_var variable during hour 13.
+hourly_var_hour14,3,Value of hourly_var variable during hour 14.
+hourly_var_hour15,3,Value of hourly_var variable during hour 15.
+hourly_var_hour16,3,Value of hourly_var variable during hour 16.
+hourly_var_hour17,3,Value of hourly_var variable during hour 17.
+hourly_var_hour18,3,Value of hourly_var variable during hour 18.
+hourly_var_hour19,3,Value of hourly_var variable during hour 19.
+hourly_var_hour20,3,Value of hourly_var variable during hour 20.
+hourly_var_hour21,3,Value of hourly_var variable during hour 21.
+hourly_var_hour22,3,Value of hourly_var variable during hour 22.
+hourly_var_hour23,3,Value of hourly_var variable during hour 23.
+hourly_var_hour24,3,Value of hourly_var variable during hour 24 (11 PM to midnight).
