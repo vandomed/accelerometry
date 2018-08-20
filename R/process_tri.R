@@ -236,7 +236,6 @@ process_tri <- function(counts,
                         start_date = NULL, 
                         id = NULL, 
                         brevity = 1, 
-                        hourly_axis = "vert", 
                         hourly_var = "cpm", 
                         hourly_wearmin = 0, 
                         hourly_normalize = FALSE, 
@@ -380,7 +379,7 @@ process_tri <- function(counts,
   
   # If artifact_action = 2, consider minutes with counts >= artifact_thresh  
   # non-wear time
-  if (artifact_action == 2 && max_artifacts >= artifact_thresh) {
+  if (artifact_action == 2 && max_artifact >= artifact_thresh) {
     artifact.locs <- which(counts.artifacts >= artifact_thresh)
     wearflag[artifact.locs] <- 0
     counts[artifact.locs, ] <- 0
@@ -678,8 +677,8 @@ process_tri <- function(counts,
     int.labels <- c("sed", "light", "life", "mod", "vig", "lightlife", "mvpa", "active")
     colnames(day.vars) <- 
       c("id", "day", "valid_day", "valid_min", 
-        paste("counts", axes, sep = "_"), 
-        paste("cpm", axes, sep = "_"), 
+        paste("counts", axis.labels, sep = "_"), 
+        paste("cpm", axis.labels, sep = "_"), 
         "steps", 
         paste(int.labels, "min", sep = "_"), 
         paste(int.labels, "percent", sep = "_"), 
@@ -695,8 +694,8 @@ process_tri <- function(counts,
     int.labels <- c("sed", "light", "life", "mod", "vig", "lightlife", "mvpa", "active")
     colnames(day.vars) <- 
       c("id", "day", "valid_day", "valid_min", 
-        paste("counts", axes, sep = "_"), 
-        paste("cpm", axes, sep = "_"), 
+        paste("counts", axis.labels, sep = "_"), 
+        paste("cpm", axis.labels, sep = "_"), 
         "steps", 
         paste(int.labels, "min", sep = "_"), 
         paste(int.labels, "percent", sep = "_"), 

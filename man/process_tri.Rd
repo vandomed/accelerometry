@@ -5,10 +5,10 @@
 \title{Process Triaxial Minute-to-Minute Accelerometer Data}
 \usage{
 process_tri(counts, steps = NULL, nci_methods = FALSE, start_day = 1,
-  start_date = NULL, id = NULL, brevity = 1, hourly_axis = "vert",
-  hourly_var = "cpm", hourly_wearmin = 0, hourly_normalize = FALSE,
-  valid_days = 1, valid_wk_days = 0, valid_we_days = 0,
-  int_axis = "vert", int_cuts = c(100, 760, 2020, 5999), cpm_nci = FALSE,
+  start_date = NULL, id = NULL, brevity = 1, hourly_var = "cpm",
+  hourly_wearmin = 0, hourly_normalize = FALSE, valid_days = 1,
+  valid_wk_days = 0, valid_we_days = 0, int_axis = "vert",
+  int_cuts = c(100, 760, 2020, 5999), cpm_nci = FALSE,
   days_distinct = FALSE, nonwear_axis = "vert", nonwear_window = 60,
   nonwear_tol = 0, nonwear_tol_upper = 99, nonwear_nci = FALSE,
   weartime_minimum = 600, weartime_maximum = 1440,

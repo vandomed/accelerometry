@@ -28,7 +28,6 @@ knitr::opts_chunk$set(
 library("dvmisc")
 library("knitr")
 library("accelerometry")
-library("ggplot2")
 ```
 
 ## Introduction
