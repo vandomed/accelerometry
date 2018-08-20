@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Variable,brevity,Description
 id,1+,Participant ID number.
 day,1+,"Day of week (1 = Sunday, …, 7 = Saturday)."
@@ -72,7 +71,7 @@ hourly_var_hour21,3,Value of hourly_var variable during hour 21.
 hourly_var_hour22,3,Value of hourly_var variable during hour 22.
 hourly_var_hour23,3,Value of hourly_var variable during hour 23.
 hourly_var_hour24,3,Value of hourly_var variable during hour 24 (11 PM to midnight).
-=======
+=======,,
 Variable,brevity,Description
 id,1+,Participant ID number.
 day,1+,"Day of week (1 = Sunday, …, 7 = Saturday)."
@@ -146,4 +145,4 @@ hourly_var_hour21,3,Value of hourly_var variable during hour 21.
 hourly_var_hour22,3,Value of hourly_var variable during hour 22.
 hourly_var_hour23,3,Value of hourly_var variable during hour 23.
 hourly_var_hour24,3,Value of hourly_var variable during hour 24 (11 PM to midnight).
->>>>>>> bfdb7e6398cb1a161d57ecc759ff71b66645f020
+>>>>>>> bfdb7e6398cb1a161d57ecc759ff71b66645f020,,
