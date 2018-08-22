@@ -80,7 +80,7 @@ IntegerVector artifacts(IntegerVector counts,
         }
       }
       if (before > -1 && after > -1) {
-        if (fmod(before + after, 2) == 0) out[b] = (before + after) / 2;
+        if (std::fmod(before + after, 2) == 0) out[b] = (before + after) / 2;
         else out[b] = (before + after + 1) / 2;
       }
       else if (before == -1) out[b] = after;

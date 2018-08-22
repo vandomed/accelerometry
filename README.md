@@ -1,7 +1,7 @@
 Functions for Processing Accelerometer Data
 ================
 Dane Van Domelen <br> <vandomed@gmail.com>
-2018-08-20
+2018-08-22
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 Introduction
