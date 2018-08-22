@@ -1,7 +1,7 @@
 Package: accelerometry
 Type: Package
 Title: Functions for Processing Accelerometer Data
-Version: 3.1.1
+Version: 3.1.2
 License: GPL-3
 LazyData: true
 Date: 2018-08-22
