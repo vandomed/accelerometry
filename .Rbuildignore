@@ -6,4 +6,4 @@
 ^process_tri_dictionary.csv$
 ^misc$
 ^Thumbs.db$
-^Thumbs*$
+^.travis.yml$
