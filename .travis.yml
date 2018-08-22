@@ -7,6 +7,7 @@ r:
   - release
   - devel
 r_packages:
+  - git2r
   - devtools
 cache: packages
 sudo: false
