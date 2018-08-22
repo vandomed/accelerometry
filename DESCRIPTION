@@ -4,7 +4,7 @@ Title: Functions for Processing Accelerometer Data
 Version: 3.1.2
 License: GPL-3
 LazyData: true
-Date: 2018-08-22
+Date: 2018-08-21
 Author: Dane R. Van Domelen
 Maintainer: Dane R. Van Domelen <vandomed@gmail.com>
 Description: A collection of functions that perform operations on time-series accelerometer data, such as identify non-wear time, flag minutes that are part of an activity bout, and find the maximum 10-minute average count value. The functions are generally very flexible, allowing for a variety of algorithms to be implemented. Most of the functions are written in C++ for efficiency.
