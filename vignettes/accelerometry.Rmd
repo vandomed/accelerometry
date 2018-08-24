@@ -126,7 +126,7 @@ It looks like the main difference here is an extra non-wear period for the 60-mi
 
 ### `bouts`
 
-A "bout" is a sustained period of activity of some intensity for some time. Bouted MVPA (moderate-to-vigorous physical activity) is a popular bout variable because physical activity guidelines are often based on MVPA accumulated in bouts of $>=$ 10 minutes [@troiano2008physical]. Bouted sedentary time can also be interesting, given recent enthusiasm for studying sedentary behaviors.
+A "bout" is a sustained period of activity of some intensity for some time. Bouted MVPA (moderate-to-vigorous physical activity) is a popular bout variable because physical activity guidelines are often based on MVPA accumulated in bouts of $\ge$ 10 minutes [@troiano2008physical]. Bouted sedentary time can also be interesting, given recent enthusiasm for studying sedentary behaviors.
 
 Here is how you would use *bouts* to identify bouted MVPA for our subject of interest. Note that 2020 is a common cutpoint used to classify MVPA [@troiano2008physical].
 
@@ -246,6 +246,7 @@ I won't give a full tutorial here, but to illustrate adjusting data-processing p
                           nonwear_axis = "sum", 
                           nonwear_window = 45))
 ```
+
 
 
 ## References

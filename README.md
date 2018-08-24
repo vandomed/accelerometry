@@ -1,7 +1,7 @@
 Functions for Processing Accelerometer Data
 ================
 Dane Van Domelen <br> <vandomed@gmail.com>
-2018-08-22
+2018-08-23
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Build Status](https://travis-ci.org/vandomed/accelerometry.svg?branch=master)](https://travis-ci.org/vandomed/accelerometry)
@@ -117,7 +117,7 @@ It looks like the main difference here is an extra non-wear period for the 60-mi
 
 ### `bouts`
 
-A "bout" is a sustained period of activity of some intensity for some time. Bouted MVPA (moderate-to-vigorous physical activity) is a popular bout variable because physical activity guidelines are often based on MVPA accumulated in bouts of &gt;= 10 minutes (Troiano et al. 2008). Bouted sedentary time can also be interesting, given recent enthusiasm for studying sedentary behaviors.
+A "bout" is a sustained period of activity of some intensity for some time. Bouted MVPA (moderate-to-vigorous physical activity) is a popular bout variable because physical activity guidelines are often based on MVPA accumulated in bouts of *g**e* 10 minutes (Troiano et al. 2008). Bouted sedentary time can also be interesting, given recent enthusiasm for studying sedentary behaviors.
 
 Here is how you would use *bouts* to identify bouted MVPA for our subject of interest. Note that 2020 is a common cutpoint used to classify MVPA (Troiano et al. 2008).
 
