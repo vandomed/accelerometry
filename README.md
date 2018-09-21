@@ -1,7 +1,7 @@
 Functions for Processing Accelerometer Data
 ================
 Dane Van Domelen <br> <vandomed@gmail.com>
-2018-08-23
+2018-09-21
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Build Status](https://travis-ci.org/vandomed/accelerometry.svg?branch=master)](https://travis-ci.org/vandomed/accelerometry)
@@ -213,7 +213,7 @@ colnames(averages.21007)
 #> [28] "life_counts"       "mod_counts"        "vig_counts"       
 #> [31] "lightlife_counts"  "mvpa_counts"       "active_counts"    
 #> [34] "sed_bouted_10min"  "sed_bouted_30min"  "sed_bouted_60min" 
-#> [37] "sed_breaks"        "max_1min_counts"   "max_50min_counts" 
+#> [37] "sed_breaks"        "max_1min_counts"   "max_5min_counts"  
 #> [40] "max_10min_counts"  "max_30min_counts"  "num_mvpa_bouts"   
 #> [43] "num_vig_bouts"     "mvpa_bouted"       "vig_bouted"       
 #> [46] "guideline_min"

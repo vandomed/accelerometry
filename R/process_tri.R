@@ -686,7 +686,7 @@ process_tri <- function(counts,
         paste(rep(int.labels, each = 5), "counts", axis.labels, sep = "_"), 
         paste("sed_bouted_", c(10, 30, 60), "min", sep = ""),
         "sed_breaks", 
-        paste("max_", rep(c(1, 50, 10, 30), each = 5), "min_", axis.labels, sep = ""), 
+        paste("max_", rep(c(1, 5, 10, 30), each = 5), "min_", axis.labels, sep = ""), 
         "num_mvpa_bouts", "num_vig_bouts", "mvpa_bouted", "vig_bouted", 
         "guideline_min")
     
@@ -703,7 +703,7 @@ process_tri <- function(counts,
         paste(rep(int.labels, each = 5), "counts", axis.labels, sep = "_"), 
         paste("sed_bouted_", c(10, 30, 60), "min", sep = ""),
         "sed_breaks", 
-        paste("max_", rep(c(1, 50, 10, 30), each = 5), "min_", axis.labels, sep = ""), 
+        paste("max_", rep(c(1, 5, 10, 30), each = 5), "min_", axis.labels, sep = ""), 
         "num_mvpa_bouts", "num_vig_bouts", "mvpa_bouted", "vig_bouted", 
         "guideline_min", 
         paste(hourly_var, "_hour", 1: 24, sep = ""))

@@ -569,7 +569,7 @@ process_uni <- function(counts,
         paste(int.labels, "counts", sep = "_"), 
         paste("sed_bouted_", c(10, 30, 60), "min", sep = ""),
         "sed_breaks", 
-        paste("max_", c(1, 50, 10, 30), "min_counts", sep = ""), 
+        paste("max_", c(1, 5, 10, 30), "min_counts", sep = ""), 
         "num_mvpa_bouts", "num_vig_bouts", "mvpa_bouted", "vig_bouted", 
         "guideline_min")
     
@@ -584,7 +584,7 @@ process_uni <- function(counts,
         paste(int.labels, "counts", sep = "_"), 
         paste("sed_bouted_", c(10, 30, 60), "min", sep = ""),
         "sed_breaks", 
-        paste("max_", c(1, 50, 10, 30), "min_counts", sep = ""), 
+        paste("max_", c(1, 5, 10, 30), "min_counts", sep = ""), 
         "num_mvpa_bouts", "num_vig_bouts", "mvpa_bouted", "vig_bouted", 
         "guideline_min", 
         paste(hourly_var, "_hour", 1: 24, sep = ""))
