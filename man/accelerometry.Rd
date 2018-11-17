@@ -18,7 +18,7 @@ efficiency.
 Package: \tab accelerometry \cr
 Type: \tab Package \cr
 Version: \tab 3.1.3 \cr
-Date: \tab 2018-09-21 \cr
+Date: \tab 2018-11-16 \cr
 License: \tab GPL-3 \cr
 }
 
