@@ -18,8 +18,6 @@ adherence_dodd(n, x, n.rec = 7, x.rec = 5, posterior = NULL)
 
 \item{posterior}{Can be \code{NULL} for original Dodd method or 
 \code{"mean"} or \code{"median"} for modified version described above.}
-
-\item{goal}{Recommended number of active days out of \code{n}.}
 }
 \description{
 Implements the Bayesian approach developed by Dodd and used in the landmark 

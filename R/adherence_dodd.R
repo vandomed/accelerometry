@@ -47,7 +47,6 @@
 #' \code{"mean"} or \code{"median"} for modified version described above.
 #' @param n.rec Denominator for recommendation.
 #' @param x.rec Numerator for recommendation.
-#' @param goal Recommended number of active days out of \code{n}.
 #' 
 #' 
 #' @examples
@@ -94,7 +93,7 @@ adherence_dodd <- function(n, x, n.rec = 7, x.rec = 5, posterior = NULL) {
   
   # Original Dodd method
   if (is.null(posterior)) {
-    return(pbeta(q = goal / 7, shape1 = x + 1, shape2 = n - x + 1, lower.tail = FALSE))
+    return(pbeta(q = x.rec / n.rec, shape1 = x + 1, shape2 = n - x + 1, lower.tail = FALSE))
   }
   
   # Modified Dodd method
