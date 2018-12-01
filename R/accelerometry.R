@@ -55,6 +55,7 @@
 #' @importFrom dvmisc inside
 #' @importFrom extraDistr pbbinom
 #' @importFrom Rcpp evalCpp
+#' @importFrom stats dbeta nlminb pbeta pbinom qbeta
 #' @useDynLib accelerometry, .registration=TRUE
 #' @name accelerometry
 NULL
