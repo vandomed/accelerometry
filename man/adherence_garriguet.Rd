@@ -58,10 +58,10 @@ which can be calculated using \code{\link{mles_beta}}.
 }
 \examples{
 # Generate data from hypothetical study with 1000 subjects, valid days 
-# randomly sampled from 1-7, and p_d's drawn from Beta(1, 2).
+# randomly sampled from 1-7, and p_d's drawn from Beta(0.5, 3).
 set.seed(1)
 n <- sample(1: 7, size = 1000, replace = TRUE)
-p_d <- rbeta(n = 1000, shape1 = 1, shape2 = 2)
+p_d <- rbeta(n = 1000, shape1 = 0.5, shape2 = 3)
 x <- rbinom(n = 1000, size = n, prob = p_d)
 
 # First step: Estimate (alpha, beta) via maximum likelihood. Have to change 

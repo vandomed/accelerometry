@@ -51,24 +51,14 @@
 #' 
 #' @examples
 #' # Generate data from hypothetical study with 1000 subjects, valid days 
-#' # randomly sampled from 1-7, and p_d's drawn from Beta(1, 2).
+#' # randomly sampled from 1-7, and p_d's drawn from Beta(0.5, 3).
 #' set.seed(1)
 #' n <- sample(1: 7, size = 1000, replace = TRUE)
-#' p_d <- rbeta(n = 1000, shape1 = 1, shape2 = 2)
+#' p_d <- rbeta(n = 1000, shape1 = 0.5, shape2 = 3)
 #' x <- rbinom(n = 1000, size = n, prob = p_d)
 #' 
 #' # Estimate p_w's using Dodd's method
-#' p_w.hat <- adherence_dodd(n = n, x = )
-#' 
-#' # First step: Estimate (alpha, beta) via maximum likelihood. Have to change 
-#' # 0's to 0.01 and 1's to 0.99 to avoid Inf's
-#' p_d.hat <- x / n
-#' p_d.hat[p_d.hat == 0] <- 0.01
-#' p_d.hat[p_d.hat == 1] <- 0.99
-#' mles <- mles_beta(x = p_d.hat)
-#' 
-#' # Estimate each subject's weekly adherence probability
-#' p_w.hat <- adherence_garriguet(n = n, x = x, alpha = mles$par[1], beta = mles$par[2])
+#' p_w.hat <- adherence_dodd(n = n, x = x)
 #' 
 #' # Note that the mean p_w.hat differs considerably from the true mean p_w, 
 #' # reflecting bias in the estimator.
