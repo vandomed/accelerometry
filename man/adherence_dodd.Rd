@@ -5,17 +5,21 @@
 \title{Estimate a Participant's Probability of Adhering to "N Days Per Week" Type of 
 Physical Activity Guideline (Dodd's Method)}
 \usage{
-adherence_dodd(n = 7, x, goal = 5, posterior = NULL)
+adherence_dodd(n, x, n.rec = 7, x.rec = 5, posterior = NULL)
 }
 \arguments{
 \item{n}{Number of monitoring days.}
 
 \item{x}{Number of active days.}
 
-\item{goal}{Recommended number of active days out of \code{n}.}
+\item{n.rec}{Denominator for recommendation.}
+
+\item{x.rec}{Numerator for recommendation.}
 
 \item{posterior}{Can be \code{NULL} for original Dodd method or 
 \code{"mean"} or \code{"median"} for modified version described above.}
+
+\item{goal}{Recommended number of active days out of \code{n}.}
 }
 \description{
 Implements the Bayesian approach developed by Dodd and used in the landmark 
@@ -57,6 +61,34 @@ close to what we're trying to estimate, p_w.
 A solution is to define p_d.hat as the posterior mean, median, or mode, and
 map that estimate to p_w, i.e. p_w.hat = P(Y >= 5) with Y ~ Bin(7, p_d.hat). 
 So there is an option for that.
+}
+\examples{
+# Generate data from hypothetical study with 1000 subjects, valid days 
+# randomly sampled from 1-7, and p_d's drawn from Beta(1, 2).
+set.seed(1)
+n <- sample(1: 7, size = 1000, replace = TRUE)
+p_d <- rbeta(n = 1000, shape1 = 1, shape2 = 2)
+x <- rbinom(n = 1000, size = n, prob = p_d)
+
+# Estimate p_w's using Dodd's method
+p_w.hat <- adherence_dodd(n = n, x = )
+
+# First step: Estimate (alpha, beta) via maximum likelihood. Have to change 
+# 0's to 0.01 and 1's to 0.99 to avoid Inf's
+p_d.hat <- x / n
+p_d.hat[p_d.hat == 0] <- 0.01
+p_d.hat[p_d.hat == 1] <- 0.99
+mles <- mles_beta(x = p_d.hat)
+
+# Estimate each subject's weekly adherence probability
+p_w.hat <- adherence_garriguet(n = n, x = x, alpha = mles$par[1], beta = mles$par[2])
+
+# Note that the mean p_w.hat differs considerably from the true mean p_w, 
+# reflecting bias in the estimator.
+mean(p_w.hat)
+mean(pbinom(q = 4, size = 7, prob = p_d, lower.tail = FALSE))
+
+
 }
 \references{
 Dodd, K. (2008). Estimation of the population prevalence of adherence to 

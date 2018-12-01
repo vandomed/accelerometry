@@ -43,9 +43,38 @@
 #' 
 #' @param n Number of monitoring days.
 #' @param x Number of active days.
-#' @param goal Recommended number of active days out of \code{n}.
 #' @param posterior Can be \code{NULL} for original Dodd method or 
 #' \code{"mean"} or \code{"median"} for modified version described above.
+#' @param n.rec Denominator for recommendation.
+#' @param x.rec Numerator for recommendation.
+#' @param goal Recommended number of active days out of \code{n}.
+#' 
+#' 
+#' @examples
+#' # Generate data from hypothetical study with 1000 subjects, valid days 
+#' # randomly sampled from 1-7, and p_d's drawn from Beta(1, 2).
+#' set.seed(1)
+#' n <- sample(1: 7, size = 1000, replace = TRUE)
+#' p_d <- rbeta(n = 1000, shape1 = 1, shape2 = 2)
+#' x <- rbinom(n = 1000, size = n, prob = p_d)
+#' 
+#' # Estimate p_w's using Dodd's method
+#' p_w.hat <- adherence_dodd(n = n, x = )
+#' 
+#' # First step: Estimate (alpha, beta) via maximum likelihood. Have to change 
+#' # 0's to 0.01 and 1's to 0.99 to avoid Inf's
+#' p_d.hat <- x / n
+#' p_d.hat[p_d.hat == 0] <- 0.01
+#' p_d.hat[p_d.hat == 1] <- 0.99
+#' mles <- mles_beta(x = p_d.hat)
+#' 
+#' # Estimate each subject's weekly adherence probability
+#' p_w.hat <- adherence_garriguet(n = n, x = x, alpha = mles$par[1], beta = mles$par[2])
+#' 
+#' # Note that the mean p_w.hat differs considerably from the true mean p_w, 
+#' # reflecting bias in the estimator.
+#' mean(p_w.hat)
+#' mean(pbinom(q = 4, size = 7, prob = p_d, lower.tail = FALSE))
 #' 
 #' 
 #' @references
@@ -61,7 +90,7 @@
 #' 
 #' 
 #' @export
-adherence_dodd <- function(n = 7, x, goal = 5, posterior = NULL) {
+adherence_dodd <- function(n, x, n.rec = 7, x.rec = 5, posterior = NULL) {
   
   # Original Dodd method
   if (is.null(posterior)) {
@@ -72,10 +101,16 @@ adherence_dodd <- function(n = 7, x, goal = 5, posterior = NULL) {
   alpha.hat <- x + 1
   beta.hat <- n - x + 1
   if (posterior == "mean") {
-    return(pbinom(q = goal - 1, size = 7, prob = alpha.hat / (alpha.hat + beta.hat), lower.tail = FALSE))
+    return(pbinom(q = x.rec - 1, 
+                  size = n.rec, 
+                  prob = alpha.hat / (alpha.hat + beta.hat), 
+                  lower.tail = FALSE))
   }
   if (posterior == "median") {
-    return(pbinom(q = goal - 1, size = 7, prob = qbeta(p = 0.5, shape1 = alpha.hat, shape2 = beta.hat), lower.tail = FALSE))
+    return(pbinom(q = x.rec - 1, 
+                  size = n.rec, 
+                  prob = qbeta(p = 0.5, shape1 = alpha.hat, shape2 = beta.hat), 
+                  lower.tail = FALSE))
   }
   
 }

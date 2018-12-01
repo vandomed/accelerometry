@@ -36,24 +36,36 @@
 #' 
 #' @param n Number of monitoring days.
 #' @param x Number of exercise days.
-#' @param goal Recommended number of active days out of \code{n}.
 #' @param alpha Parameter in p_d ~ Beta(alpha, beta). Corresponds to 
 #' \code{shape1} in \code{\link[stats]{Beta}} functions.
 #' @param beta Parameter in p_d ~ Beta(alpha, beta). Corresponds to 
 #' \code{shape2} in \code{\link[stats]{Beta}} functions.
+#' @param n.rec Denominator for recommendation.
+#' @param x.rec Numerator for recommendation.
 #' 
 #' 
 #' @examples
-#' # Generate data from hypothetical study with 100 subjects, valid days 
+#' # Generate data from hypothetical study with 1000 subjects, valid days 
 #' # randomly sampled from 1-7, and p_d's drawn from Beta(1, 2).
 #' set.seed(1)
-#' n <- sample(1: 7, size = 100, replace = TRUE)
-#' p_d <- rbeta(n = 100, shape1 = 1, shape2 = 2)
-#' x <- rbinom(n = 100, size = n, prob = p_d)
+#' n <- sample(1: 7, size = 1000, replace = TRUE)
+#' p_d <- rbeta(n = 1000, shape1 = 1, shape2 = 2)
+#' x <- rbinom(n = 1000, size = n, prob = p_d)
 #' 
-#' # First step: Estimate (alpha, beta) via maximum likelihood
-#' mles <- fitdistr(x = x / n, densfun = "beta", start = list(shape1 = 1, shape2 = 1))
+#' # First step: Estimate (alpha, beta) via maximum likelihood. Have to change 
+#' # 0's to 0.01 and 1's to 0.99 to avoid Inf's
+#' p_d.hat <- x / n
+#' p_d.hat[p_d.hat == 0] <- 0.01
+#' p_d.hat[p_d.hat == 1] <- 0.99
+#' mles <- mles_beta(x = p_d.hat)
 #' 
+#' # Estimate each subject's weekly adherence probability
+#' p_w.hat <- adherence_garriguet(n = n, x = x, alpha = mles$par[1], beta = mles$par[2])
+#' 
+#' # Note that the mean p_w.hat differs considerably from the true mean p_w, 
+#' # reflecting bias in the estimator.
+#' mean(p_w.hat)
+#' mean(pbinom(q = 4, size = 7, prob = p_d, lower.tail = FALSE))
 #' 
 #' 
 #' @references
@@ -64,6 +76,6 @@
 #' 
 #' 
 #' @export
-adherence_garriguet <- function(n = 7, x, goal = 5, alpha, beta) {
-  pbbinom(q = goal - 1, size = n, alpha = alpha + x, beta = beta + n - x, lower.tail = FALSE)
+adherence_garriguet <- function(n, x, alpha, beta, n.rec = 7, x.rec = 5) {
+  pbbinom(q = x.rec - 1, size = n.rec, alpha = alpha + x, beta = beta + n - x, lower.tail = FALSE)
 }

@@ -11,7 +11,7 @@
 #' Package: \tab accelerometry \cr
 #' Type: \tab Package \cr
 #' Version: \tab 3.1.3 \cr
-#' Date: \tab 2018-11-16 \cr
+#' Date: \tab 2018-12-01 \cr
 #' License: \tab GPL-3 \cr
 #' }
 #'

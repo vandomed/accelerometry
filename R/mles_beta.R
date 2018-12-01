@@ -19,5 +19,5 @@ mles_beta <- function(x, start = c(0.5, 0.5)) {
   ll.f <- function(theta) {
     -sum(dbeta(x = x, shape1 = theta[1], shape2 = theta[2], log = TRUE))
   }
-  nlminb(start = start, objective = ll.f, lower = c(0, 0))
+  nlminb(start = start, objective = ll.f, lower = c(0.001, 0.001))
 }
